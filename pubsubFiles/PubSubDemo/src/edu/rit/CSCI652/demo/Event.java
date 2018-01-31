@@ -1,8 +1,9 @@
 package edu.rit.CSCI652.demo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Event {
+public class Event implements Serializable{
 	private int id;
 	private Topic topic;
 	private String title;
@@ -16,11 +17,5 @@ public class Event {
 		this.content = content;
 	}
 	
-	// Method may not be required
-	/*
-	public void writeContent(String title, String content){
-		
-		
-	}
-	*/
+
 }
