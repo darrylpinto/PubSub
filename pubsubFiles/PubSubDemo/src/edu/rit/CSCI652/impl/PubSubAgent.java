@@ -5,6 +5,10 @@ import edu.rit.CSCI652.demo.Publisher;
 import edu.rit.CSCI652.demo.Subscriber;
 import edu.rit.CSCI652.demo.Topic;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class PubSubAgent implements Publisher, Subscriber{
@@ -51,25 +55,19 @@ public class PubSubAgent implements Publisher, Subscriber{
 		
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("Are you a new user? (Y/N)");
-		String newUser =  sc.next();
 		System.out.println("Enter username: ");
 		String username = sc.next();
 
-		if(newUser.equalsIgnoreCase("Y")){
+		Socket soc = new Socket("localhost", 6000);
+		DataOutputStream out = new DataOutputStream(soc.getOutputStream());
+		DataInputStream in = new DataInputStream(soc.getInputStream());
+		out.writeUTF(username);
 
-			// NEW USER TO BE ADDED BY EVENT Manager
-
-			// Send username to event manager and add it
-		}
-		else{
-
-			// Existing user. Login. If incorrect username then end with message
-		}
-
+		String output = in.readUTF();
+		System.out.println(output);
 	}
 
 
