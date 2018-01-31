@@ -12,7 +12,14 @@ public class Topic {
 		this.name = name;
 	}
 
+	public Topic(int id, String name, List<String> keywords){
+		this.id = id;
+		this.name = name;
+		this.keywords = keywords;
+	}
+	
 	public addKeyword(String keyword){
 		//Adding a keyword to the topic
+		this.keywords.add(keyword);
 	}
 }
