@@ -18,7 +18,7 @@ public class Topic {
 		this.keywords = keywords;
 	}
 	
-	public addKeyword(String keyword){
+	public void addKeyword(String keyword){
 		//Adding a keyword to the topic
 		this.keywords.add(keyword);
 	}
