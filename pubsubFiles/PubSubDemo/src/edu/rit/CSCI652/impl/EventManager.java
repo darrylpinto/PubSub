@@ -48,7 +48,7 @@ public class EventManager{
 			}
 			else{
 				subscriberTopic.put(user_name,new ArrayList<Topic>());
-				out.writeUTF("You are Registered:"+ user_name);
+				out.writeUTF(user_name+" Registered!");
 			}
 		}
 	}
