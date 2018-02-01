@@ -61,7 +61,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 		System.out.println("Enter username: ");
 		String username = sc.next();
 
-		Socket soc = new Socket("localhost", 6000);
+		Socket soc = new Socket("127.0.0.1", 6000);
 		DataOutputStream out = new DataOutputStream(soc.getOutputStream());
 		DataInputStream in = new DataInputStream(soc.getInputStream());
 		out.writeUTF(username);
