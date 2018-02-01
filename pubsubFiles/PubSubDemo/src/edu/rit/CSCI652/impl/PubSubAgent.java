@@ -56,18 +56,28 @@ public class PubSubAgent implements Publisher, Subscriber{
 	}
 
 	public static void main(String[] args) throws IOException {
-		Scanner sc = new Scanner(System.in);
 
+		String host = "192.168.137.38";
+		Socket socTemp = new Socket(host, 6000);
+		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
+
+		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
+		String port = inputTemp.readUTF();
+		System.out.println("Received new port:" + port);
+
+		//socTemp.close();
+
+		Socket soc = new Socket(host, Integer.parseInt(port));
+		DataOutputStream output = new DataOutputStream(soc.getOutputStream());
+		DataInputStream input = new DataInputStream(soc.getInputStream());
+
+		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter username: ");
 		String username = sc.next();
+		output.writeUTF(username);
 
-		Socket soc = new Socket("127.0.0.1", 6000);
-		DataOutputStream out = new DataOutputStream(soc.getOutputStream());
-		DataInputStream in = new DataInputStream(soc.getInputStream());
-		out.writeUTF(username);
 
-		String output = in.readUTF();
-		System.out.println(output);
+		System.out.println(input.readUTF());
 	}
 
 
