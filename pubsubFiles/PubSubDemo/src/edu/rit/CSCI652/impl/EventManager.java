@@ -10,17 +10,27 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventManager{
 
-	private static ConcurrentHashMap<String, ArrayList<Topic>> subscriberTopic = new ConcurrentHashMap<>();
+
+	private static ServerSocket[] serversocks = new ServerSocket[10];
 	/*
      * Start the repo service
      */
 	private void startService() throws IOException {
 
 		ServerSocket serverSock = new ServerSocket(6000);
+
+		//creating new sockets
+		for(int i =0 ; i< 10;i++)
+		{
+			serversocks[i] = new ServerSocket(6001+i);
+			new Thread(new PortThread(serversocks[i])).start();
+		}
+		// receive initial connection and assign port numbers
 		receive(serverSock);
 
 	}
@@ -32,25 +42,27 @@ public class EventManager{
 
 	}
 
+
 	private void receive(ServerSocket serverSock) throws IOException {
+		Random rand = new Random();
+
 		while (true) {
 
 
 			Socket socket = serverSock.accept();
+
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
-			String user_name = input.readUTF();
-			System.out.println(user_name);
+			int random_integer = rand.nextInt(10)+6001;
 
-			if(subscriberTopic.contains(user_name)){
-				out.writeUTF("Logged In:"+ user_name);
-			}
-			else{
-				subscriberTopic.put(user_name,new ArrayList<Topic>());
-				out.writeUTF("You are Registered:"+ user_name);
-			}
+			System.out.println("1 connection received, redirecting to port:"+ random_integer);
+			String portNum = "" + random_integer;
+			out.writeUTF(portNum);
+
+
 		}
+
 	}
 
 	/*
