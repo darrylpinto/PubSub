@@ -32,28 +32,31 @@ public class ClientThread implements Runnable {
             }
 
             //** Add it in a hashmap
+<<<<<<< HEAD
             System.out.println(user_name);
+            try {
 
+                if (EventManager.subscriberTopic.containsKey(user_name)) {
+                    output.writeUTF("Logged In:" + user_name);
+                    System.out.println(EventManager.subscriberTopic);
+
+                } else {
+                    EventManager.subscriberTopic.put(user_name, new ArrayList<Topic>());
+                    output.writeUTF("You are Registered:" + user_name);
+                    System.out.println(EventManager.subscriberTopic);
+
+=======
+            //System.out.println(user_name);
             try
             {
                 if (EventManager.subscriberTopics.containsKey(user_name)) {
                     output.writeUTF("Logged In:" + user_name);
-                    System.out.println(EventManager.subscriberTopics);
-
-                } else {
-                    EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
-                    output.writeUTF("You are Registered:" + user_name);
-                    System.out.println(EventManager.subscriberTopics);
-                }
-            //System.out.println(user_name);
-
-                if (EventManager.subscriberTopics.containsKey(user_name)) {
-                    output.writeUTF("Logged In:" + user_name);
                     output.flush();
                 } else {
                     EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
                     output.writeUTF("You are Registered:" + user_name);
                     output.flush();
+>>>>>>> d781b6cf50671d44f54206010d12f32fc0db6a9f
                 }
                 commnicate(input,output);
             }

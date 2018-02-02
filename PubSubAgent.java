@@ -126,7 +126,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 	private Topic getTopics() throws IOException {
 
 		output.writeUTF("getTopics");
-		Arrayinput.readUTF();
+		return null;
 
 	}
 
