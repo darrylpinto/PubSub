@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Topic implements Serializable{
@@ -9,6 +10,7 @@ public class Topic implements Serializable{
 	public Topic(int id, String name){
 		this.id = id;
 		this.name = name;
+		this.keywords = new ArrayList<String>();
 	}
 
 	public Topic(int id, String name, List<String> keywords){
@@ -16,9 +18,15 @@ public class Topic implements Serializable{
 		this.name = name;
 		this.keywords = keywords;
 	}
+	//create .equals method by topic name
 	
 	public void addKeyword(String keyword){
 		//Adding a keyword to the topic
 		this.keywords.add(keyword);
 	}
+
+	public String getName() {
+		return name;
+	}
+
 }
