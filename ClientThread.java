@@ -17,8 +17,8 @@ public class ClientThread implements Runnable {
     public ClientThread(Socket client, ServerSocket serverSocket) throws IOException {
         this.client = client;
         this.serverSocket = serverSocket ;
-        this.output = new DataOutputStream(client.getOutputStream());
-        this.input = new DataInputStream(client.getInputStream());
+        this.output = new DataOutputStream(this.client.getOutputStream());
+        this.input = new DataInputStream(this.client.getInputStream());
     }
 
     @Override
@@ -33,22 +33,43 @@ public class ClientThread implements Runnable {
             }
 
             //** Add it in a hashmap
-            System.out.println(user_name);
-            try {
-
-
-                if (subscriberTopic.contains(user_name)) {
+            //System.out.println(user_name);
+            try
+            {
+                if (EventManager.subscriberTopics.containsKey(user_name)) {
                     output.writeUTF("Logged In:" + user_name);
+                    output.flush();
                 } else {
-                    subscriberTopic.put(user_name, new ArrayList<Topic>());
+                    EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
                     output.writeUTF("You are Registered:" + user_name);
+                    output.flush();
                 }
+                commnicate(input,output);
             }
             catch (Exception e)
             {
                 System.out.println(e.getMessage());
             }
         }
+
+    }
+
+    private void commnicate(DataInputStream input, DataOutputStream output) throws IOException {
+
+        while (true)
+        {
+            String input_string = input.readUTF();
+
+            switch (input_string)
+            {
+                case "get topic":
+                    output.writeUTF("topiclist");
+
+
+            }
+        }
+
+
 
     }
 }
