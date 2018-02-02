@@ -16,8 +16,8 @@ public class ClientThread implements Runnable {
     public ClientThread(Socket client, ServerSocket serverSocket) throws IOException {
         this.client = client;
         this.serverSocket = serverSocket ;
-        this.output = new DataOutputStream(client.getOutputStream());
-        this.input = new DataInputStream(client.getInputStream());
+        this.output = new DataOutputStream(this.client.getOutputStream());
+        this.input = new DataInputStream(this.client.getInputStream());
     }
 
     @Override
@@ -32,6 +32,7 @@ public class ClientThread implements Runnable {
             }
 
             //** Add it in a hashmap
+<<<<<<< HEAD
             System.out.println(user_name);
             try {
 
@@ -44,13 +45,45 @@ public class ClientThread implements Runnable {
                     output.writeUTF("You are Registered:" + user_name);
                     System.out.println(EventManager.subscriberTopic);
 
+=======
+            //System.out.println(user_name);
+            try
+            {
+                if (EventManager.subscriberTopics.containsKey(user_name)) {
+                    output.writeUTF("Logged In:" + user_name);
+                    output.flush();
+                } else {
+                    EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
+                    output.writeUTF("You are Registered:" + user_name);
+                    output.flush();
+>>>>>>> d781b6cf50671d44f54206010d12f32fc0db6a9f
                 }
+                commnicate(input,output);
             }
             catch (Exception e)
             {
                 System.out.println(e.getMessage());
             }
         }
+
+    }
+
+    private void commnicate(DataInputStream input, DataOutputStream output) throws IOException {
+
+        while (true)
+        {
+            String input_string = input.readUTF();
+
+            switch (input_string)
+            {
+                case "get topic":
+                    output.writeUTF("topiclist");
+
+
+            }
+        }
+
+
 
     }
 }

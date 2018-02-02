@@ -6,6 +6,14 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventManager{
+	//used for registration
+	public static ConcurrentHashMap<String, ArrayList<Topic>> subscriberTopics = new ConcurrentHashMap<>();
+
+	// used for publish(Events) topics and subscriber
+	public static ConcurrentHashMap<String,ArrayList<String>> topicSubscriber = new ConcurrentHashMap<>();
+
+	//used for advertising keyword , topic : possibility of overwrtiting
+	public static ConcurrentHashMap<String,String> keyword_topic = new ConcurrentHashMap<>();
 
 
 	private static ServerSocket[] serversocks = new ServerSocket[10];
@@ -14,16 +22,18 @@ public class EventManager{
      */
 	private void startService() throws IOException {
 
+
 		ServerSocket serverSock = new ServerSocket(6000);
 
 		//creating new sockets
 		for(int i =0 ; i< 10;i++)
 		{
 			serversocks[i] = new ServerSocket(6001+i);
+
 			new Thread(new PortThread(serversocks[i])).start();
 		}
 		// receive initial connection and assign port numbers
-		receive(serverSock);
+		redirectToNewPort(serverSock);
 
 	}
 
@@ -35,7 +45,10 @@ public class EventManager{
 	}
 
 
-	private void receive(ServerSocket serverSock) throws IOException {
+	private void redirectToNewPort(ServerSocket serverSock) throws IOException {
+
+
+
 		Random rand = new Random();
 
 		while (true) {
