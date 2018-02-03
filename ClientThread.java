@@ -63,7 +63,7 @@ public class ClientThread implements Runnable {
             switch (input_string)
             {
                 case "get topic":
-                    output.writeUTF("topiclist");
+                    //output.writeUTF("topiclist");
 
 
             }
