@@ -7,8 +7,8 @@ public class ClientThread implements Runnable {
 
     private ServerSocket serverSocket;
     private  Socket client;
-    private  DataOutputStream output;
-    private  DataInputStream input;
+   // private  DataOutputStream output;
+    //private  DataInputStream input;
     private ObjectInputStream objinput;
     private ObjectOutputStream objoutput;
 
@@ -17,8 +17,8 @@ public class ClientThread implements Runnable {
 
         this.client = client;
         this.serverSocket = serverSocket ;
-        this.output = new DataOutputStream(this.client.getOutputStream());
-        this.input = new DataInputStream(this.client.getInputStream());
+        //this.output = new DataOutputStream(this.client.getOutputStream());
+       // this.input = new DataInputStream(this.client.getInputStream());
         this.objinput = new ObjectInputStream(this.client.getInputStream());
         this.objoutput = new ObjectOutputStream(this.client.getOutputStream());
 
@@ -30,7 +30,8 @@ public class ClientThread implements Runnable {
         synchronized (serverSocket) {
             String user_name = null;
             try {
-                user_name = input.readUTF();
+
+                user_name = objinput.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,18 +43,18 @@ public class ClientThread implements Runnable {
             {
                 if (EventManager.subscriberTopics.containsKey(user_name)) {
 
-                    output.writeUTF("Logged In:" + user_name);
+                    objoutput.writeUTF("Logged In:" + user_name);
                     //System.out.println(EventManager.subscriberTopics);
 
                 } else {
                     EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
-                    output.writeUTF("You are Registered:" + user_name);
-                    output.flush();
+                    objoutput.writeUTF("You are Registered:" + user_name);
+                    objoutput.flush();
                     //System.out.println(EventManager.subscriberTopics);
                 }
             //System.out.println(user_name);
 
-                communicate(input,output);
+                communicate(objinput,objoutput);
             }
             catch (IOException e)
             {
@@ -63,7 +64,7 @@ public class ClientThread implements Runnable {
 
     }
 
-    private void communicate(DataInputStream input, DataOutputStream output) throws IOException {
+    private void communicate(ObjectInputStream input, ObjectOutputStream output) throws IOException {
 
         while (true)
         {
@@ -78,8 +79,10 @@ public class ClientThread implements Runnable {
 
                 case "advertise":
                     try {
+                        System.out.println("*inside advertise");
                         Object obj = objinput.readObject();
                         Topic newtopic = (Topic) obj;
+                        System.out.println(newtopic);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
