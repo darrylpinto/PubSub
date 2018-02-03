@@ -18,7 +18,13 @@ public class Topic implements Serializable{
 		this.name = name;
 		this.keywords = keywords;
 	}
-	//create .equals method by topic name
+
+	@Override
+	public boolean equals(Object obj){
+		Topic t = (Topic) obj;
+		return this.name.equals(t.getName());
+
+	}
 	
 	public void addKeyword(String keyword){
 		//Adding a keyword to the topic
