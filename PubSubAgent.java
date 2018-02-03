@@ -52,9 +52,9 @@ public class PubSubAgent implements Publisher, Subscriber{
 			this.output.writeUTF("advertise");
 			this.output.flush();
 
-			ObjectOutputStream obj1 = new ObjectOutputStream(this.output);
-			obj1.writeObject(newTopic);
-			obj1.flush();
+			this.output.writeObject(newTopic);
+			this.output.flush();
+
 			System.out.printf(" Topic (%s) sent for advertisement", newTopic.getName());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,7 +73,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "192.168.137.80";
+		String host = "localhost";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());

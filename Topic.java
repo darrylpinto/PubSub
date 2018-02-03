@@ -35,6 +35,11 @@ public class Topic implements Serializable{
 		return name;
 	}
 
-
-
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
