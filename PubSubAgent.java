@@ -1,13 +1,11 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class PubSubAgent implements Publisher, Subscriber{
 
-	static DataInputStream input;
-	static DataOutputStream output;
+	private InputStream input;
+	private OutputStream output;
 
 	@Override
 	public void subscribe(Topic topic) {
@@ -47,16 +45,37 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	@Override
 	public void advertise(Topic newTopic) {
+
+		try {
+
+			DataOutputStream dat1 = new DataOutputStream(this.output);
+			dat1.writeUTF("advertise");
+			dat1.flush();
+
+			ObjectOutputStream obj1 = new ObjectOutputStream(this.output);
+			obj1.writeObject(newTopic);
+			obj1.flush();
+			System.out.printf(" Topic (%s) sent for advertisement", newTopic.getName());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void main(String[] args) throws IOException {
+
+	public static void main(String[] args) throws IOException {
+		PubSubAgent pubsub = new PubSubAgent();
+		pubsub.start();
+
+	}
+
+	private void start() throws IOException {
 
 		String host = "localhost";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
-
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
 		String port = inputTemp.readUTF();
 		System.out.println("Received new port:" + port);
@@ -64,30 +83,34 @@ public class PubSubAgent implements Publisher, Subscriber{
 		socTemp.close();
 
 		Socket soc = new Socket(host, Integer.parseInt(port));
-		this.output = new DataOutputStream(soc.getOutputStream());
-		this.input = new DataInputStream(soc.getInputStream());
+		this.output = soc.getOutputStream();
+		this.input = soc.getInputStream();
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter username: ");
 		String username = sc.next();
-		output.writeUTF(username);
-		output.flush();
+		DataOutputStream out1 = new DataOutputStream(this.output);
+		DataInputStream in1 = new DataInputStream(this.input);
+		out1.writeUTF(username);
+		out1.flush();
 
-
-		System.out.println(input.readUTF());
+		// Status: Logged in or Registered
+		System.out.println(in1.readUTF());
 
 		//////////////////////////////////////////////////////////
-		this.printMenu();
+		// NEED THREADING HERE
+		printMenu();
 	}
 
 
-	public void printMenu() throws IOException {
+	private void printMenu() throws IOException {
 
 		System.out.println("1. Subscribe");
 		System.out.println("2. Unsubscribe");
 		System.out.println("3. List subscribed topics");
 		System.out.println("4. Publish");
 		System.out.println("5. Advertise");
+		System.out.println("6. Read Messages");
 
 		Scanner sc  = new Scanner(System.in);
 
@@ -118,6 +141,16 @@ public class PubSubAgent implements Publisher, Subscriber{
 			// UNSUBCRIBE LOGIC
 				break;
 
+			// 3
+			// 4
+			case 5:
+//				System.out.println("Name of the topic:");
+//				String topicName = sc.next();
+//
+				Topic newTopic = new Topic(1234,"Sports");
+				this.advertise(newTopic);
+				break;
+
 			default:
 				System.out.println("Invalid ENTRY! TRY AGAIN");
 		}
@@ -125,7 +158,13 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private Topic getTopics() throws IOException {
 
-		output.writeUTF("getTopics");
+		DataOutputStream out1 = new DataOutputStream(this.output);
+		DataInputStream in1 = new DataInputStream(this.input);
+		out1.writeUTF("getTopics");
+		out1.flush();
+
+
+
 		return null;
 
 	}
