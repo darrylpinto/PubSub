@@ -11,7 +11,6 @@ public class ClientThread implements Runnable {
     private  Socket client;
     private  DataOutputStream output;
     private  DataInputStream input;
-    private static ConcurrentHashMap<String, ArrayList<Topic>> subscriberTopic = new ConcurrentHashMap<>();
 
     // ServerSocket is serverSocket on portThread
     public ClientThread(Socket client, ServerSocket serverSocket) throws IOException {
@@ -33,9 +32,21 @@ public class ClientThread implements Runnable {
             }
 
             //** Add it in a hashmap
-            //System.out.println(user_name);
+            System.out.println(user_name);
+
             try
             {
+                if (EventManager.subscriberTopics.containsKey(user_name)) {
+                    output.writeUTF("Logged In:" + user_name);
+                    System.out.println(EventManager.subscriberTopics);
+
+                } else {
+                    EventManager.subscriberTopics.put(user_name, new ArrayList<Topic>());
+                    output.writeUTF("You are Registered:" + user_name);
+                    System.out.println(EventManager.subscriberTopics);
+                }
+            //System.out.println(user_name);
+
                 if (EventManager.subscriberTopics.containsKey(user_name)) {
                     output.writeUTF("Logged In:" + user_name);
                     output.flush();
