@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class PubSubAgent implements Publisher, Subscriber{
 
-	private InputStream input;
-	private OutputStream output;
+	private ObjectInputStream input;
+	private ObjectOutputStream output;
 
 	@Override
 	public void subscribe(Topic topic) {
@@ -48,9 +48,9 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 		try {
 
-			DataOutputStream dat1 = new DataOutputStream(this.output);
-			dat1.writeUTF("advertise");
-			dat1.flush();
+
+			this.output.writeUTF("advertise");
+			this.output.flush();
 
 			ObjectOutputStream obj1 = new ObjectOutputStream(this.output);
 			obj1.writeObject(newTopic);
@@ -73,7 +73,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "localhost";
+		String host = "192.168.137.80";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
@@ -83,19 +83,19 @@ public class PubSubAgent implements Publisher, Subscriber{
 		socTemp.close();
 
 		Socket soc = new Socket(host, Integer.parseInt(port));
-		this.output = soc.getOutputStream();
-		this.input = soc.getInputStream();
+		this.output = new ObjectOutputStream(soc.getOutputStream());
+		this.input =  new ObjectInputStream(soc.getInputStream());
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter username: ");
 		String username = sc.next();
-		DataOutputStream out1 = new DataOutputStream(this.output);
-		DataInputStream in1 = new DataInputStream(this.input);
-		out1.writeUTF(username);
-		out1.flush();
+//		DataOutputStream out1 = new DataOutputStream(this.output);
+//		DataInputStream in1 = new DataInputStream(this.input);
+		this.output.writeUTF(username);
+		this.output.flush();
 
 		// Status: Logged in or Registered
-		System.out.println(in1.readUTF());
+		System.out.println(this.input.readUTF());
 
 		//////////////////////////////////////////////////////////
 		// NEED THREADING HERE
@@ -148,6 +148,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 //				String topicName = sc.next();
 //
 				Topic newTopic = new Topic(1234,"Sports");
+
 				this.advertise(newTopic);
 				break;
 
@@ -158,10 +159,10 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private Topic getTopics() throws IOException {
 
-		DataOutputStream out1 = new DataOutputStream(this.output);
-		DataInputStream in1 = new DataInputStream(this.input);
-		out1.writeUTF("getTopics");
-		out1.flush();
+//		DataOutputStream out1 = new DataOutputStream(this.output);
+//		DataInputStream in1 = new DataInputStream(this.input);
+//		out1.writeUTF("getTopics");
+//		out1.flush();
 
 
 
