@@ -71,9 +71,12 @@ public class PubSubAgent implements Publisher, Subscriber{
 	public static void main(String[] args) throws IOException {
 		PubSubAgent pubsub = new PubSubAgent();
 		pubsub.start();
-		new Thread(new Sender(pubsub)).start();
-		new Thread(new Receiver(pubsub)).start();
 
+		new Thread(new Receiver(pubsub.input)).start();
+
+		while(true){
+			pubsub.printMenu();
+		}
 	}
 
 	private void start() throws IOException {
@@ -91,6 +94,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 		this.output = new ObjectOutputStream(soc.getOutputStream());
 		this.input =  new ObjectInputStream(soc.getInputStream());
 
+
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter username: ");
 		username = sc.next();
@@ -99,76 +103,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 		// Status: Logged in or Registered
 		System.out.println(this.input.readUTF());
-
-		//////////////////////////////////////////////////////////
-		// NEED THREADING HERE
-
-	}
-
-
-//
-//	public ArrayList<String> getTopics() throws IOException {
-////
-//		this.output.writeUTF("getTopics");
-//		this.output.flush();
-//		ArrayList<String> interestedTopics = new ArrayList<>();
-//		try {
-//			Object obj = input.readObject();
-//			ArrayList<String> topics = (ArrayList<String>) obj;
-//			HashSet<String> topicSet = new HashSet<String>(topics);
-//
-//
-//
-//			System.out.println("Available Topics:");
-//			for(int i=0; i<topics.size(); i++)
-//				System.out.println(topics.get(i));
-//			System.out.println("Enter all interested topics: ");
-//
-//			Scanner sc = new Scanner(System.in);
-//			while(true){
-//				System.out.println("Press N/n to exit");
-//				String topicName = sc.next();
-//				if(topicName.equalsIgnoreCase("N"))
-//					break;
-//				else{
-//					if(topicSet.contains(topicName))
-//						interestedTopics.add(topicName);
-//					else{
-//						System.out.println("INVALID TOPIC NAME. Check Spelling");
-//					}
-//				}
-//			}
-//
-//			// check fr spelling
-//
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//
-//
-//		return interestedTopics;
-//
-//	}
-//
-
-}
-
-class Sender implements Runnable {
-	private PubSubAgent pubSub;
-
-	public Sender(PubSubAgent pubsub){
-		this.pubSub = pubsub;
-	}
-	@Override
-	public void run() {
-
-		try {
-			while(true) {
-				printMenu();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 	}
 
@@ -230,57 +164,57 @@ class Sender implements Runnable {
 
 				Topic newTopic = new Topic(id,topicName);
 
-				pubSub.advertise(newTopic);
+				this.advertise(newTopic);
 				break;
 
 			default:
 				System.out.println("Invalid ENTRY! TRY AGAIN");
 		}
 	}
+//
+//	public ArrayList<String> getTopics() throws IOException {
+////
+//		this.output.writeUTF("getTopics");
+//		this.output.flush();
+//		ArrayList<String> interestedTopics = new ArrayList<>();
+//		try {
+//			Object obj = input.readObject();
+//			ArrayList<String> topics = (ArrayList<String>) obj;
+//			HashSet<String> topicSet = new HashSet<String>(topics);
+//
+//
+//
+//			System.out.println("Available Topics:");
+//			for(int i=0; i<topics.size(); i++)
+//				System.out.println(topics.get(i));
+//			System.out.println("Enter all interested topics: ");
+//
+//			Scanner sc = new Scanner(System.in);
+//			while(true){
+//				System.out.println("Press N/n to exit");
+//				String topicName = sc.next();
+//				if(topicName.equalsIgnoreCase("N"))
+//					break;
+//				else{
+//					if(topicSet.contains(topicName))
+//						interestedTopics.add(topicName);
+//					else{
+//						System.out.println("INVALID TOPIC NAME. Check Spelling");
+//					}
+//				}
+//			}
+//
+//			// check fr spelling
+//
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//
+//
+//		return interestedTopics;
+//
+//	}
+//
+
 }
 
-class Receiver implements Runnable{
-	PubSubAgent pubSub;
-
-	public Receiver(PubSubAgent pubSub){
-		this.pubSub = pubSub;
-	}
-
-	//Have to declare a new
-	@Override
-	public void run() {
-
-		while(true) {
-			try {
-				String choice = this.pubSub.input.readUTF();
-
-				if (choice.equals("Topic"))
-					this.receiveAdvertisements();
-				else if (choice.equals("Event"))
-					this.receiveEvents();
-				else
-					System.out.println("Error");
-			} catch (IOException | ClassNotFoundException e) {
-				e.printStackTrace();
-				break;
-			}
-		}
-	}
-
-	private void receiveAdvertisements() throws IOException, ClassNotFoundException {
-
-		//Implement receiving advertisements here
-		Object obj = this.pubSub.input.readObject();
-		Topic topic = (Topic)obj;
-		System.out.println("===============================================");
-		System.out.println("**New Advertisement Received :"+topic.getName());
-		System.out.println("===============================================");
-
-	}
-
-	private void receiveEvents(){
-
-		//implement receiving event notifications here
-
-	}
-}
