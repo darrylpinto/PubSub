@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 /**
  * Created by Darryl Pinto on 2/4/2018.
@@ -19,17 +20,58 @@ public class Receiver implements Runnable {
             try {
                 String choice = this.input.readUTF();
 
-                if (choice.equals("Topic"))
-                    this.receiveAdvertisements();
-                else if (choice.equals("Event"))
-                    this.receiveEvents();
-                else
-                    System.out.println("Error");
+                switch (choice) {
+                    case "Topic":
+                        this.receiveAdvertisements();
+                        break;
+                    case "Event":
+                        this.receiveEvents();
+                        break;
+                    case "getAllTopics":
+                        this.receiveAllTopics();
+                        break;
+                    case "ListSubscribedTopics":
+                        this.receiveSubscribedTopics();
+                    default:
+                        System.out.println("Error");
+                        break;
+                }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
                 break;
             }
         }
+    }
+
+    private void receiveSubscribedTopics() {
+    }
+
+    private void receiveAllTopics() {
+
+        synchronized (input)
+        {
+            //receive arraylistt of strings
+            try {
+                Object obj = input.readObject();
+                ArrayList<String> allTopics = (ArrayList<String>)obj;
+
+                StringBuilder topics_string = new StringBuilder("======================All Topics=========================\n");
+                int i =0;
+                for (String topic: allTopics) {
+                    topics_string.append("").append(++i).append(". ").append(topic).append("\n");
+                }
+                topics_string.append("===============================================\n");
+                System.out.println(topics_string);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            input.notify();
+        }
+
     }
 
     private void receiveAdvertisements() throws IOException, ClassNotFoundException {

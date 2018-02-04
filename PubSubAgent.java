@@ -13,7 +13,12 @@ public class PubSubAgent implements Publisher, Subscriber{
 	@Override
 	public void subscribe(Topic topic) {
 		// TODO Auto-generated method stub
-		
+		try {
+			output.writeObject(topic);
+			output.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -81,7 +86,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "localhost";
+		String host = "192.168.137.38";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
@@ -124,12 +129,52 @@ public class PubSubAgent implements Publisher, Subscriber{
 		switch (choice){
 			case 1:
 //
-//				System.out.println("Press 1 to subscribe by TOPIC\n"+
-//						"Press 2 to subscribe by KEYWORD\n");
+				System.out.println("Press 1 to subscribe by TOPIC\n"+
+						"Press 2 to subscribe by KEYWORD\n");
 //
-//				int choice2 = sc.nextInt();
-//				if(choice2 == 1){
-//					System.out.println("\n==== SUBSCRIPTION BY TOPIC ====");
+				int choice2 = sc.nextInt();
+
+				if(choice2 == 1) {
+					System.out.println("\n==== SUBSCRIPTION BY TOPIC ====");
+					// first user name
+					this.output.writeUTF("getAllTopics");
+					this.output.flush();
+
+
+
+					synchronized (input) {
+						try {
+							input.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+					this.output.writeUTF("subscribeTopics");
+					this.output.flush();
+
+					this.output.writeUTF(this.username);
+					this.output.flush();
+
+					System.out.println("Enter topics to subscribe to");
+					while (true) {
+						System.out.println("Press N/n to exit");
+						String topicName = sc.next();
+						if (topicName.equalsIgnoreCase("N")){
+							this.subscribe(new Topic(0, "3511"));		//Stop code
+							break;
+						}
+
+						else {
+							this.subscribe(new Topic(0, topicName));
+						}
+					}
+				}
+
+					///
+
+
+
 //					ArrayList<String> interestedTopics = pubSub.getTopics();
 //
 //					this.pubSub.output.writeUTF(""+interestedTopics.size());
@@ -171,50 +216,5 @@ public class PubSubAgent implements Publisher, Subscriber{
 				System.out.println("Invalid ENTRY! TRY AGAIN");
 		}
 	}
-//
-//	public ArrayList<String> getTopics() throws IOException {
-////
-//		this.output.writeUTF("getTopics");
-//		this.output.flush();
-//		ArrayList<String> interestedTopics = new ArrayList<>();
-//		try {
-//			Object obj = input.readObject();
-//			ArrayList<String> topics = (ArrayList<String>) obj;
-//			HashSet<String> topicSet = new HashSet<String>(topics);
-//
-//
-//
-//			System.out.println("Available Topics:");
-//			for(int i=0; i<topics.size(); i++)
-//				System.out.println(topics.get(i));
-//			System.out.println("Enter all interested topics: ");
-//
-//			Scanner sc = new Scanner(System.in);
-//			while(true){
-//				System.out.println("Press N/n to exit");
-//				String topicName = sc.next();
-//				if(topicName.equalsIgnoreCase("N"))
-//					break;
-//				else{
-//					if(topicSet.contains(topicName))
-//						interestedTopics.add(topicName);
-//					else{
-//						System.out.println("INVALID TOPIC NAME. Check Spelling");
-//					}
-//				}
-//			}
-//
-//			// check fr spelling
-//
-//		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//
-//
-//		return interestedTopics;
-//
-//	}
-//
 
 }
-
