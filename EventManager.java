@@ -17,7 +17,7 @@ public class EventManager{
 
 	public static ConcurrentHashMap<String, ClientThread> subscriberThreadMap = new ConcurrentHashMap<>();
 
-
+    public  static ConcurrentHashMap<String, ArrayList<Topic>> offlineTopics = new ConcurrentHashMap<>();
 	private static ServerSocket[] serverSocks = new ServerSocket[10];
 
 
@@ -109,8 +109,25 @@ public class EventManager{
 		for (String user_name :
 				EventManager.subscriberThreadMap.keySet()) {
 			ClientThread thread = EventManager.subscriberThreadMap.get(user_name);
-			thread.sendAdvertisement(newtopic);
-		}
+
+            try {
+                thread.sendAdvertisement(newtopic);
+            } catch (SocketException e) {
+                System.out.println(thread.user_name + " is offline. Caching the Topic:"+ newtopic.getName());
+                ArrayList<Topic> topicList = new ArrayList<>();
+
+                if(EventManager.offlineTopics.containsKey(user_name)) {
+                     topicList = EventManager.offlineTopics.get(user_name);
+                }
+
+                topicList.add(newtopic);
+                EventManager.offlineTopics.put(user_name,topicList);
+
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
 
 		System.out.println(EventManager.topicSubscriber);
 
