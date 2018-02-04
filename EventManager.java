@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventManager{
 
 	//used for registration
-	public static ConcurrentHashMap<String, ArrayList<Topic>> subscriberTopics = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, ArrayList<String>> subscriberTopics = new ConcurrentHashMap<>();
 
 	// used for publish(Events) topics and subscriber
 	public static ConcurrentHashMap<String,ArrayList<String>> topicSubscriber = new ConcurrentHashMap<>();

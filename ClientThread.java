@@ -60,6 +60,7 @@ public class ClientThread implements Runnable {
 
     private void communicate() throws IOException {
 
+
         while (true)
         {
 
@@ -68,15 +69,68 @@ public class ClientThread implements Runnable {
 
             switch (input_string)
             {
-                case "getTopics":
-//                    ArrayList<String> arr = new ArrayList<>();
-//
-//                    for (String key:EventManager.topicSubscriber.keySet()) {
-//                        arr.add(key);
-//                    }
-//                    objoutput.writeObject(arr);
-//                    objoutput.flush();
-//
+                case "getAllTopics":
+
+                    objoutput.writeUTF("getAllTopics");
+                    objoutput.flush();
+
+                    ArrayList<String> arr = new ArrayList<>();
+
+                    for (String key:EventManager.topicSubscriber.keySet()) {
+                        arr.add(key);
+                    }
+
+                    objoutput.writeObject(arr);
+                    objoutput.flush();
+
+                    break;
+
+
+                case "subscribeTopics":
+
+                    String user_name = objinput.readUTF();
+
+                    while (true)
+                    {
+                        // receive topics break when topicname == 3511
+                        try {
+                            Object obj = objinput.readObject();
+                            Topic topic = (Topic)obj;
+
+                            if(topic.getName().equals("3511"))
+                                break;
+                         // adding subscriber to topicsubsriber
+
+                            ArrayList<String> temp =  EventManager.topicSubscriber.get(topic.getName());
+                            HashSet<String> isUserPresent = new HashSet<>(temp);
+
+                            if(!isUserPresent.contains(user_name)) {
+                                 temp.add(user_name);
+                                 EventManager.topicSubscriber.put(topic.getName(), temp);
+
+                                 //adding topic to the subscriber topic
+                                 // check if the topic is already present or not
+                                 ArrayList<String> topicTemp = EventManager.subscriberTopics.get(user_name);
+                                 topicTemp.add(topic.getName());
+                                 EventManager.subscriberTopics.put(user_name, topicTemp);
+
+                                System.out.println(user_name+" is subscribed to topic: "+topic.getName());
+                            }
+
+
+                        }
+                        catch (NullPointerException e)
+                        {
+                            System.out.println("Key not found invalid spelling!!!");
+                        }
+                        catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    break;
+
 //                    try {
 //
 //                        int no_of_topics = Integer.parseInt(this.objinput.readUTF());
@@ -102,7 +156,7 @@ public class ClientThread implements Runnable {
 //                        e.printStackTrace();
 //                    }
 
-                    break;
+
                 case "advertise":
                     try {
                         System.out.println("*inside advertise");
