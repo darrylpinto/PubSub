@@ -1,22 +1,26 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventManager{
+
 	//used for registration
 	public static ConcurrentHashMap<String, ArrayList<Topic>> subscriberTopics = new ConcurrentHashMap<>();
 
 	// used for publish(Events) topics and subscriber
 	public static ConcurrentHashMap<String,ArrayList<String>> topicSubscriber = new ConcurrentHashMap<>();
 
-	//used for advertising keyword , topic : possibility of overwrtiting
+	//used for advertising keyword , topic : possibility of overwriting
 	public static ConcurrentHashMap<String,String> keyword_topic = new ConcurrentHashMap<>();
 
+	public static ConcurrentHashMap<String, ClientThread> subscriberThreadMap = new ConcurrentHashMap<>();
 
-	private static ServerSocket[] serversocks = new ServerSocket[10];
+
+	private static ServerSocket[] serverSocks = new ServerSocket[10];
+
+
 	/*
      * Start the repo service
      */
@@ -28,9 +32,9 @@ public class EventManager{
 		//creating new sockets
 		for(int i =0 ; i< 10;i++)
 		{
-			serversocks[i] = new ServerSocket(6001+i);
+			serverSocks[i] = new ServerSocket(6001+i);
 
-			new Thread(new PortThread(serversocks[i])).start();
+			new Thread(new PortThread(serverSocks[i])).start();
 		}
 		// receive initial connection and assign port numbers
 		redirectToNewPort(serverSock);
@@ -47,12 +51,9 @@ public class EventManager{
 
 	private void redirectToNewPort(ServerSocket serverSock) throws IOException {
 
-
-
 		Random rand = new Random();
 
 		while (true) {
-
 
 			Socket socket = serverSock.accept();
 
@@ -64,7 +65,6 @@ public class EventManager{
 			System.out.println("1 connection received, redirecting to port:"+ random_integer);
 			String portNum = "" + random_integer;
 			out.writeUTF(portNum);
-
 
 		}
 
@@ -105,4 +105,14 @@ public class EventManager{
 	}
 
 
+	public static void advertiseTopic(Topic newtopic) {
+		for (String user_name :
+				EventManager.subscriberThreadMap.keySet()) {
+			ClientThread thread = EventManager.subscriberThreadMap.get(user_name);
+			thread.sendAdvertisement(newtopic);
+		}
+
+		System.out.println(EventManager.topicSubscriber);
+
+	}
 }
