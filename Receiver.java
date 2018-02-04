@@ -30,8 +30,9 @@ public class Receiver implements Runnable {
                     case "getAllTopics":
                         this.receiveAllTopics();
                         break;
-                    case "ListSubscribedTopics":
+                    case "getSubscribedTopics":
                         this.receiveSubscribedTopics();
+                        break;
                     default:
                         System.out.println("Error");
                         break;
@@ -44,6 +45,20 @@ public class Receiver implements Runnable {
     }
 
     private void receiveSubscribedTopics() {
+
+        try {
+            Object obj = input.readObject();
+            ArrayList<String> subscribedTopics = (ArrayList<String>)obj;
+            StringBuilder sb = new StringBuilder("Subscribed  Topics:\n");
+
+            for(String topicNames: subscribedTopics){
+                sb.append(topicNames).append("\n");
+            }
+
+            System.out.println(sb);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void receiveAllTopics() {
@@ -62,9 +77,7 @@ public class Receiver implements Runnable {
                 }
                 topics_string.append("===============================================\n");
                 System.out.println(topics_string);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 

@@ -41,6 +41,13 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	@Override
 	public void listSubscribedTopics() {
+
+		try {
+			this.output.writeUTF("getSubscribedTopics");
+			this.output.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -86,7 +93,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "192.168.137.69";
+		String host = "192.168.137.38";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
@@ -222,7 +229,9 @@ public class PubSubAgent implements Publisher, Subscriber{
 				// UNSUBCRIBE LOGIC
 				break;
 
-			// 3
+			case 3:
+				this.listSubscribedTopics();
+				break;
 			// 4
 			case 5:
 				Random rand = new Random();
