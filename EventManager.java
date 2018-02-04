@@ -6,17 +6,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EventManager{
 
-	//used for registration
+	//used for registration (subscriber - key ,Topic - value (InString))
 	public static ConcurrentHashMap<String, ArrayList<String>> subscriberTopics = new ConcurrentHashMap<>();
 
-	// used for publish(Events) topics and subscriber
+	// used for publish(Events) 	(topics - key, List of subscribers - value)
 	public static ConcurrentHashMap<String,ArrayList<String>> topicSubscriber = new ConcurrentHashMap<>();
 
 	//used for advertising keyword , topic : possibility of overwriting
 	public static ConcurrentHashMap<String,String> keyword_topic = new ConcurrentHashMap<>();
 
+	//	Subscriber - key, ClientThread - value
 	public static ConcurrentHashMap<String, ClientThread> subscriberThreadMap = new ConcurrentHashMap<>();
 
+	// USerName - key, List of missed Topics - value
     public  static ConcurrentHashMap<String, ArrayList<Topic>> offlineTopics = new ConcurrentHashMap<>();
 	private static ServerSocket[] serverSocks = new ServerSocket[10];
 
@@ -129,7 +131,7 @@ public class EventManager{
             }
         }
 
-		System.out.println(EventManager.topicSubscriber);
+		System.out.println("ALL TOPICS:"+ EventManager.topicSubscriber);
 
 	}
 }

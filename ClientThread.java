@@ -54,6 +54,8 @@ public class ClientThread implements Runnable {
                     EventManager.subscriberTopics.put(user_name, new ArrayList<>());
                     objoutput.writeUTF("You are Registered:" + user_name);
                     objoutput.flush();
+
+                    EventManager.offlineTopics.put(user_name, new ArrayList<>());
                 }
                 EventManager.subscriberThreadMap.put(user_name, this);
 
@@ -97,7 +99,7 @@ public class ClientThread implements Runnable {
 
                 case "subscribeTopics":
 
-                    String user_name = objinput.readUTF();
+                    String receivedUserName = objinput.readUTF();
 
                     while (true)
                     {
@@ -113,17 +115,18 @@ public class ClientThread implements Runnable {
                             ArrayList<String> temp =  EventManager.topicSubscriber.get(topic.getName());
                             HashSet<String> isUserPresent = new HashSet<>(temp);
 
-                            if(!isUserPresent.contains(user_name)) {
-                                 temp.add(user_name);
+                            if(!isUserPresent.contains(receivedUserName)) {
+                                 temp.add(receivedUserName);
                                  EventManager.topicSubscriber.put(topic.getName(), temp);
 
                                  //adding topic to the subscriber topic
                                  // check if the topic is already present or not
-                                 ArrayList<String> topicTemp = EventManager.subscriberTopics.get(user_name);
+                                 ArrayList<String> topicTemp = EventManager.subscriberTopics.get(receivedUserName);
                                  topicTemp.add(topic.getName());
-                                 EventManager.subscriberTopics.put(user_name, topicTemp);
+                                 EventManager.subscriberTopics.put(receivedUserName, topicTemp);
 
-                                System.out.println(user_name+" is subscribed to topic: "+topic.getName());
+                                System.out.println(receivedUserName+" is subscribed to topic: "+topic.getName());
+                                System.out.println(EventManager.subscriberTopics);
                             }
 
 
@@ -140,30 +143,18 @@ public class ClientThread implements Runnable {
 
                     break;
 
-//                    try {
-//
-//                        int no_of_topics = Integer.parseInt(this.objinput.readUTF());
-//                        String user_name = this.objinput.readUTF();
-//
-//                        for (int i = 0; i < no_of_topics; i++) {
-//                            Object obj =this.objinput.readObject();
-//                            Topic currentTopic = (Topic) obj;
-//
-//                            ArrayList<String> subscribers = EventManager.topicSubscriber.get(currentTopic.getName());
-//                            HashSet<String> subscribersSet = new HashSet<>(subscribers);
-//                            if (subscribersSet.contains(user_name)){
-//                                System.out.println(user_name + " already subscribed to " + currentTopic.getName() );
-//                            }
-//                            else{
-//                                subscribers.add(user_name);
-//                                EventManager.topicSubscriber.put(currentTopic.getName(),subscribers);
-//                                System.out.println(user_name + " subscribed to " + currentTopic.getName());
-//                            }
-//                        }
-//
-//                    } catch (ClassNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
+                case "getSubscribedTopics":
+
+                    this.objoutput.writeUTF("getSubscribedTopics");
+                    this.objoutput.flush();
+
+                    ArrayList<String> temp = EventManager.subscriberTopics.get(this.user_name);
+                    System.out.println("Sent to " + user_name + "->" + temp);
+
+                    this.objoutput.writeObject(temp);
+                    this.objoutput.flush();
+
+                    break;
 
 
                 case "advertise":
