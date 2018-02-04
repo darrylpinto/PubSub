@@ -11,6 +11,8 @@ public class ClientThread implements Runnable {
     private ObjectInputStream objinput;
     private ObjectOutputStream objoutput;
 
+    public String user_name;
+
     // ServerSocket is serverSocket on portThread
     public ClientThread(Socket client, ServerSocket serverSocket) throws IOException {
 
@@ -19,6 +21,7 @@ public class ClientThread implements Runnable {
 
         this.objinput = new ObjectInputStream(this.client.getInputStream());
         this.objoutput = new ObjectOutputStream(this.client.getOutputStream());
+        this.user_name = "";
 
     }
 
@@ -26,7 +29,7 @@ public class ClientThread implements Runnable {
     public void run() {
 
        // synchronized (serverSocket) {
-            String user_name = null;
+           // String user_name = null;
             try {
                 user_name = objinput.readUTF();
             } catch (IOException e) {
@@ -40,12 +43,18 @@ public class ClientThread implements Runnable {
                 if (EventManager.subscriberTopics.containsKey(user_name)) {
 
                     objoutput.writeUTF("Logged In:" + user_name);
+                    objoutput.flush();
+
+                    objoutput.writeObject(EventManager.offlineTopics.get(user_name));
+                    objoutput.flush();
+
+                    EventManager.offlineTopics.put(user_name, new ArrayList<>());
 
                 } else {
                     EventManager.subscriberTopics.put(user_name, new ArrayList<>());
                     objoutput.writeUTF("You are Registered:" + user_name);
+                    objoutput.flush();
                 }
-                objoutput.flush();
                 EventManager.subscriberThreadMap.put(user_name, this);
 
                 communicate();
@@ -184,8 +193,8 @@ public class ClientThread implements Runnable {
 
     }
 
-    public void sendAdvertisement(Topic newtopic) {
-        try {
+    public void sendAdvertisement(Topic newtopic) throws IOException {
+
             this.objoutput.writeUTF("Topic");
             this.objoutput.flush();
 
@@ -193,9 +202,7 @@ public class ClientThread implements Runnable {
             this.objoutput.flush();
 
             System.out.println("Topic Advertised:"+ newtopic.getName());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
 
 
     }
