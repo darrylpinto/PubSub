@@ -72,7 +72,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	}
 
-
+	//main
 	public static void main(String[] args) throws IOException {
 		PubSubAgent pubsub = new PubSubAgent();
 		pubsub.start();
@@ -86,7 +86,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "192.168.137.38";
+		String host = "192.168.137.69";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
@@ -106,20 +106,43 @@ public class PubSubAgent implements Publisher, Subscriber{
 		this.output.writeUTF(username);
 		this.output.flush();
 
+		String receieved = this.input.readUTF();
 		// Status: Logged in or Registered
-		System.out.println(this.input.readUTF());
+		System.out.println(receieved);
 
+		//receive arraylist of missed advertisements
+		if(!receieved.equalsIgnoreCase("You are Registered:"+username)) {
+			try {
+				Object obj = this.input.readObject();
+				ArrayList<Topic> missedTopics = (ArrayList<Topic>) obj;
+				if (missedTopics.size() == 0) {
+					System.out.println("You have missed 0 topics");
+				} else {
+					StringBuilder sb = new StringBuilder("-------------------\n***You have Missed Topics***\n");
+					int i =0;
+					for (Topic t : missedTopics) {
+						sb.append(++i).append(". ").append(t.getName()).append("\n");
+					}
+					sb.append("-------------------");
+					System.out.println(sb);
+				}
+
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 
 	private void printMenu() throws IOException {
 
-		System.out.println("1. Subscribe");
-		System.out.println("2. Unsubscribe");
-		System.out.println("3. List subscribed topics");
-		System.out.println("4. Publish");
-		System.out.println("5. Advertise");
-		System.out.println("6. Read Messages");
+		System.out.println("1. Subscribe" +
+				"\n 2. Unsubscribe" +
+				"\n3. List subscribed topics"+
+				"\n4. Publish"+
+				"\n5. Advertise"+
+				"\n6. Read Messages");
 
 		Scanner sc  = new Scanner(System.in);
 
