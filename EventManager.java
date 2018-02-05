@@ -67,6 +67,7 @@ public class EventManager{
 			System.out.println("1 connection received, redirecting to port:"+ random_integer);
 			String portNum = "" + random_integer;
 			out.writeUTF(portNum);
+			out.flush();
 
 		}
 

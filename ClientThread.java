@@ -105,6 +105,7 @@ public class ClientThread implements Runnable {
                     {
                         // receive topics break when topicname == 3511
                         try {
+
                             Object obj = objinput.readObject();
                             Topic topic = (Topic)obj;
 
@@ -151,6 +152,7 @@ public class ClientThread implements Runnable {
                     ArrayList<String> temp = EventManager.subscriberTopics.get(this.user_name);
                     System.out.println("Sent to " + user_name + "->" + temp);
 
+                    objoutput.reset();
                     this.objoutput.writeObject(temp);
                     this.objoutput.flush();
 
@@ -163,6 +165,7 @@ public class ClientThread implements Runnable {
                         Object obj = this.objinput.readObject();
                         Topic newtopic = (Topic) obj;
                         System.out.println(newtopic);
+
                         if(EventManager.topicSubscriber.containsKey(newtopic.getName())){
                             System.out.println("Topic already present: "+ newtopic.getName());
                         }
@@ -175,6 +178,75 @@ public class ClientThread implements Runnable {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
+                    break;
+
+
+                case "unsubscribeTopic":
+
+                    String userNametoUnsubscribe = objinput.readUTF();
+
+                    while (true)
+                    {
+                        // receive topic name = 3512 to break the loop
+                        try {
+
+                            // receive topic name = 3512 to break the loop
+
+                            Object obj =objinput.readObject();
+                            Topic topic = (Topic)obj;
+
+                            if(topic.getName().equals("3512"))
+                                break;
+
+                            //removed from the subscrbed topic list of user
+                           // System.out.println("SUBSCRIBER TOPIC (before): "+ EventManager.subscriberTopics);
+                            ArrayList<String> temparr = EventManager.subscriberTopics.get(userNametoUnsubscribe);
+                            temparr.remove(topic.getName());
+                            EventManager.subscriberTopics.put(userNametoUnsubscribe, temparr);
+                           // System.out.println("SUBSCRIBER TOPIC(after): "+ EventManager.subscriberTopics);
+
+                            // removed from the list of subscriber for that specific topic
+                          //  System.out.println("TOPIC SUBSCRIBER (before): "+ EventManager.topicSubscriber);
+                            temparr = EventManager.topicSubscriber.get(topic.getName());
+                            temparr.remove(userNametoUnsubscribe);
+                            EventManager.topicSubscriber.put(topic.getName(), temparr);
+                         //   System.out.println("TOPIC SUBSCRIBER (after): "+ EventManager.topicSubscriber);
+
+                            System.out.println(userNametoUnsubscribe+ " has unsubsribed from the topic: "+topic.getName());
+
+
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        //error to be caught when topic name is not present
+                        catch(NullPointerException e)
+                        {
+                            System.out.println("Error : Invalid spelling !");
+                        }
+
+                    }
+
+
+                    break;
+
+                case "unsubscribeAll":
+                     String usernameAll = objinput.readUTF();
+
+                     //removed all topics from subsriber topic
+                     ArrayList<String> temptopics = EventManager.subscriberTopics.get(usernameAll);
+                     EventManager.subscriberTopics.put(usernameAll,new ArrayList<>());
+
+                     // removed one by one from topic subscriber
+                    for (String s:temptopics) {
+                      ArrayList<String> temptopiclist =  EventManager.topicSubscriber.get(s);
+                      temptopiclist.remove(usernameAll);
+                      EventManager.topicSubscriber.put(s,temptopiclist);
+
+                      System.out.println(usernameAll+ " has unsubsribed from the topic: "+s);
+                    }
+
+                    break;
 
 
             }
