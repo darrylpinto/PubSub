@@ -45,10 +45,17 @@ public class ClientThread implements Runnable {
                     objoutput.writeUTF("Logged In:" + user_name);
                     objoutput.flush();
 
+                    objoutput.reset();
                     objoutput.writeObject(EventManager.offlineTopics.get(user_name));
                     objoutput.flush();
 
+                    objoutput.reset();
+                    objoutput.writeObject(EventManager.offlineEvents.get(user_name));
+                    objoutput.flush();
+
                     EventManager.offlineTopics.put(user_name, new ArrayList<>());
+                    EventManager.offlineEvents.put(user_name, new ArrayList<>());
+
 
                 } else {
                     EventManager.subscriberTopics.put(user_name, new ArrayList<>());
@@ -56,6 +63,8 @@ public class ClientThread implements Runnable {
                     objoutput.flush();
 
                     EventManager.offlineTopics.put(user_name, new ArrayList<>());
+                    EventManager.offlineEvents.put(user_name, new ArrayList<>());
+
                 }
                 EventManager.subscriberThreadMap.put(user_name, this);
 
@@ -249,6 +258,20 @@ public class ClientThread implements Runnable {
                     break;
 
 
+                case "Event":
+                    try {
+                        Object obj = objinput.readObject();
+                        Event event = (Event)obj;
+                        EventManager.notifySubscribers(event);
+
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
+
+
             }
         }
 
@@ -268,5 +291,15 @@ public class ClientThread implements Runnable {
 
 
 
+    }
+
+    public void sendEvent(Event event) throws IOException {
+        this.objoutput.writeUTF("Event");
+        this.objoutput.flush();
+
+        this.objoutput.writeObject(event);
+        this.objoutput.flush();
+
+        System.out.println("Event Published:"+ event.getTitle());
     }
 }

@@ -14,6 +14,30 @@ public class Event implements Serializable{
 		this.title = title;
 		this.content = content;
 	}
-	
 
+	public int getId() {
+		return id;
+	}
+
+	public Topic getTopic() {
+		return topic;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	@Override
+	public String toString() {
+		return "Event{" +
+				"id=" + id +
+				", topic=" + topic +
+				", title='" + title + '\'' +
+				", content='" + content + '\'' +
+				'}';
+	}
 }

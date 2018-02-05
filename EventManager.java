@@ -20,6 +20,8 @@ public class EventManager{
 
 	// USerName - key, List of missed Topics - value
     public  static ConcurrentHashMap<String, ArrayList<Topic>> offlineTopics = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, ArrayList<Event>> offlineEvents = new ConcurrentHashMap<>();
+
 	private static ServerSocket[] serverSocks = new ServerSocket[10];
 
 
@@ -46,7 +48,37 @@ public class EventManager{
 	/*
      * notify all subscribers of new event
      */
-	private void notifySubscribers(Event event) {
+	public static void notifySubscribers(Event event) {
+
+		String eventTopicName = event.getTopic().getName();
+
+		if(EventManager.topicSubscriber.containsKey(eventTopicName)){
+			ArrayList<String> subscribers = EventManager.topicSubscriber.get(eventTopicName);
+
+			for (String subscriber: subscribers) {
+				ClientThread thread = EventManager.subscriberThreadMap.get(subscriber);
+
+				try {
+					thread.sendEvent(event);
+				}catch (SocketException e){
+
+					System.out.println(thread.user_name + " is offline. Caching the Event:"+ event.getTitle());
+					ArrayList<Event> eventList = new ArrayList<>();
+
+					if(EventManager.offlineEvents.containsKey(thread.user_name)) {
+						eventList = EventManager.offlineEvents.get(thread.user_name);
+					}
+
+					eventList.add(event);
+					EventManager.offlineEvents.put(thread.user_name,eventList);
+					System.out.println("OFFLINE EVENTS:"+ EventManager.offlineEvents);
+
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
 	}
 

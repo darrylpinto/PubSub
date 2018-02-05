@@ -121,7 +121,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	private void start() throws IOException {
 
-		String host = "192.168.137.38";
+		String host = "localhost";
 		Socket socTemp = new Socket(host, 6000);
 		DataOutputStream outTemp = new DataOutputStream(socTemp.getOutputStream());
 		DataInputStream inputTemp = new DataInputStream(socTemp.getInputStream());
@@ -148,8 +148,9 @@ public class PubSubAgent implements Publisher, Subscriber{
 		//receive arraylist of missed advertisements
 		if(!receieved.equalsIgnoreCase("You are Registered:"+username)) {
 			try {
-				Object obj = this.input.readObject();
-				ArrayList<Topic> missedTopics = (ArrayList<Topic>) obj;
+				Object objtopic = this.input.readObject();
+				ArrayList<Topic> missedTopics = (ArrayList<Topic>) objtopic;
+
 				if (missedTopics.size() == 0) {
 					System.out.println("You have missed 0 topics");
 				} else {
@@ -161,6 +162,26 @@ public class PubSubAgent implements Publisher, Subscriber{
 					sb.append("-------------------");
 					System.out.println(sb);
 				}
+
+
+				Object objevent = this.input.readObject();
+				ArrayList<Event> missedEvents = (ArrayList<Event>) objevent;
+
+
+				if (missedEvents.size() == 0) {
+					System.out.println("You have missed 0 Events");
+				} else {
+					StringBuilder sb = new StringBuilder("-------------------\n***You have Missed Events***\n");
+					int i = 0;
+					for (Event e : missedEvents) {
+						sb.append(++i).append(". ").append("Topic Name: ").append(/*e.getTopic().getName()*/"")
+								.append(" Event Title: ").append(e.getTitle()).append("\n");
+					}
+					sb.append("-------------------");
+					System.out.println(sb);
+				}
+
+
 
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -282,10 +303,10 @@ public class PubSubAgent implements Publisher, Subscriber{
 				System.out.println("Name of the topic Title:");
 				String eventTitle = sc.next();
 				System.out.println("Enter Content:");
-				String eventContent = sc.next();
-
-				this.publish(new Event(idEvent, eventTopic, eventTitle, eventContent));
-
+				String eventContent = sc.nextLine();
+				Event newevent = new Event(idEvent, eventTopic, eventTitle, eventContent);
+				this.publish(newevent);
+				System.out.println(this.username + " published Event: " + newevent);
 
 				break;
 			case 5:

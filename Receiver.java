@@ -103,6 +103,19 @@ public class Receiver implements Runnable {
 
     private void receiveEvents() {
 
+        try {
+            Object obj = this.input.readObject();
+            Event event = (Event) obj;
+
+            System.out.println("===============================================\n" +
+                    "**New Event Received :\n" +"Title: "+ event.getTitle() + "\nContent: "+ event.getContent() +
+                    "\n===============================================");
+
+
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         //implement receiving event notifications here
 
     }
