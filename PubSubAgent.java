@@ -74,7 +74,16 @@ public class PubSubAgent implements Publisher, Subscriber{
 	@Override
 	public void publish(Event event) {
 		// TODO Auto-generated method stub
-		
+		try{
+			this.output.writeUTF("Event");
+			this.output.flush();
+
+			this.output.writeObject(event);
+			this.output.flush();
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -171,6 +180,8 @@ public class PubSubAgent implements Publisher, Subscriber{
 				"\n6. Read Messages");
 
 		Scanner sc  = new Scanner(System.in);
+		Random rand = new Random();
+
 
 		System.out.println("Enter choice");
 		int choice = sc.nextInt();
@@ -261,14 +272,28 @@ public class PubSubAgent implements Publisher, Subscriber{
 			case 3:
 				this.listSubscribedTopics();
 				break;
-			// 4
+
+			case 4:
+				System.out.println("Publish Event");
+				int idEvent = rand.nextInt();
+				System.out.println("Name of the topic:");
+				String eventTopicName = sc.next();
+				Topic eventTopic = new Topic(0, eventTopicName);
+				System.out.println("Name of the topic Title:");
+				String eventTitle = sc.next();
+				System.out.println("Enter Content:");
+				String eventContent = sc.next();
+
+				this.publish(new Event(idEvent, eventTopic, eventTitle, eventContent));
+
+
+				break;
 			case 5:
-				Random rand = new Random();
-				int id = rand.nextInt();
+				int idTopic = rand.nextInt();
 				System.out.println("Name of the topic:");
 				String topicName = sc.next();
 
-				Topic newTopic = new Topic(id,topicName);
+				Topic newTopic = new Topic(idTopic,topicName);
 
 				this.advertise(newTopic);
 				break;
