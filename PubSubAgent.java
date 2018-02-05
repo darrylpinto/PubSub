@@ -30,13 +30,32 @@ public class PubSubAgent implements Publisher, Subscriber{
 	@Override
 	public void unsubscribe(Topic topic) {
 		// TODO Auto-generated method stub
-		
+		try {
+
+			this.output.writeObject(topic);
+			this.output.flush();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
 	public void unsubscribe() {
+
 		// TODO Auto-generated method stub
-		
+		try {
+			this.output.writeUTF("unsubscribeAll");
+			this.output.flush();
+
+			this.output.writeUTF(this.username);
+			this.output.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
 	@Override
@@ -145,7 +164,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 	private void printMenu() throws IOException {
 
 		System.out.println("1. Subscribe" +
-				"\n 2. Unsubscribe" +
+				"\n2. Unsubscribe" +
 				"\n3. List subscribed topics"+
 				"\n4. Publish"+
 				"\n5. Advertise"+
@@ -158,10 +177,10 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 		switch (choice){
 			case 1:
-//
+
 				System.out.println("Press 1 to subscribe by TOPIC\n"+
 						"Press 2 to subscribe by KEYWORD\n");
-//
+
 				int choice2 = sc.nextInt();
 
 				if(choice2 == 1) {
@@ -200,33 +219,43 @@ public class PubSubAgent implements Publisher, Subscriber{
 						}
 					}
 				}
-
-					///
-
-
-
-//					ArrayList<String> interestedTopics = pubSub.getTopics();
-//
-//					this.pubSub.output.writeUTF(""+interestedTopics.size());
-//					this.pubSub.output.flush();
-//
-//					this.pubSub.output.writeUTF(this.pubSub.username);
-//					this.pubSub.output.flush();
-//
-//					for (String interestedTopic : interestedTopics) {
-//						this.pubSub.subscribe(new Topic(0, interestedTopic));
-//					}
-//				}
-//				else{
-//					System.out.println("\n==== SUBSCRIPTION BY KEYWORD ====");
-//
-//					// KEYWORD SUBSCRIPTION
-//				}
-//
-//				break;
+				break;
 
 			case 2:
 				// UNSUBCRIBE LOGIC
+				System.out.println("Press 1 to Unsubscribe by TOPIC\n"+
+						"Press 2 to Unsubscribe from all topics\n");
+
+				int choice3 = sc.nextInt();
+
+				if(choice3 == 1){
+					System.out.println("Enter the names of the topics you wish to unsubscribe to");
+
+					this.output.writeUTF("unsubscribeTopic");
+					this.output.flush();
+
+					this.output.writeUTF(this.username);
+					this.output.flush();
+
+					while(true){
+						System.out.println("Press N/n to exit");
+						String unsubscribed = sc.next();
+
+						if(unsubscribed.equalsIgnoreCase("N")){
+							Topic stop = new Topic(0,"3512");
+							unsubscribe(stop);
+							break;
+						}
+						else{
+							unsubscribe(new Topic(0,unsubscribed));
+						}
+
+					}
+
+				}
+				else if(choice3 == 2){
+					this.unsubscribe();
+				}
 				break;
 
 			case 3:

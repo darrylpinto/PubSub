@@ -12,7 +12,6 @@ public class Receiver implements Runnable {
         this.input = input;
     }
 
-    //Have to declare a new
     @Override
     public void run() {
 
@@ -47,13 +46,17 @@ public class Receiver implements Runnable {
     private void receiveSubscribedTopics() {
 
         try {
-            Object obj = input.readObject();
-            ArrayList<String> subscribedTopics = (ArrayList<String>)obj;
-            StringBuilder sb = new StringBuilder("Subscribed  Topics:\n");
+            Object obj = this.input.readObject();
+            ArrayList<String> subscribedTopics;
+            subscribedTopics = new ArrayList<>((ArrayList<String>)obj);
+
+            StringBuilder sb = new StringBuilder("====================== Subscribed Topics =========================\n");
 
             for(String topicNames: subscribedTopics){
                 sb.append(topicNames).append("\n");
             }
+
+            sb.append("================================================================\n");
 
             System.out.println(sb);
         } catch (IOException | ClassNotFoundException e) {
@@ -75,7 +78,7 @@ public class Receiver implements Runnable {
                 for (String topic: allTopics) {
                     topics_string.append("").append(++i).append(". ").append(topic).append("\n");
                 }
-                topics_string.append("===============================================\n");
+                topics_string.append("====================================================================\n");
                 System.out.println(topics_string);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
