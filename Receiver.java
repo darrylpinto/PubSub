@@ -51,11 +51,11 @@ public class Receiver implements Runnable {
         try {
             Object obj = this.input.readObject();
             ArrayList<String> subscribedTopics;
-            subscribedTopics = new ArrayList<>((ArrayList<String>)obj);
+            subscribedTopics = new ArrayList<>((ArrayList<String>) obj);
 
             StringBuilder sb = new StringBuilder("====================== Subscribed Topics =========================\n");
 
-            for(String topicNames: subscribedTopics){
+            for (String topicNames : subscribedTopics) {
                 sb.append(topicNames).append("\n");
             }
 
@@ -68,16 +68,15 @@ public class Receiver implements Runnable {
     }
 
     private void getAllKeywords() {
-        synchronized (input)
-        {
+        synchronized (input) {
             //receive arraylistt of strings
             try {
                 Object obj = input.readObject();
-                ArrayList<String> allKeywords = (ArrayList<String>)obj;
+                ArrayList<String> allKeywords = (ArrayList<String>) obj;
 
                 StringBuilder keyword_string = new StringBuilder("======================All KEYWORDS=========================\n");
-                int i =0;
-                for (String keyword: allKeywords) {
+                int i = 0;
+                for (String keyword : allKeywords) {
                     keyword_string.append("").append(++i).append(". ").append(keyword).append("\n");
                 }
                 keyword_string.append("====================================================================\n");
@@ -93,18 +92,17 @@ public class Receiver implements Runnable {
     }
 
 
-        private void getAllTopics() {
+    private void getAllTopics() {
 
-        synchronized (input)
-        {
+        synchronized (input) {
             //receive arraylistt of strings
             try {
                 Object obj = input.readObject();
-                ArrayList<String> allTopics = (ArrayList<String>)obj;
+                ArrayList<String> allTopics = (ArrayList<String>) obj;
 
                 StringBuilder topics_string = new StringBuilder("======================All Topics=========================\n");
-                int i =0;
-                for (String topic: allTopics) {
+                int i = 0;
+                for (String topic : allTopics) {
                     topics_string.append("").append(++i).append(". ").append(topic).append("\n");
                 }
                 topics_string.append("====================================================================\n");
@@ -125,7 +123,7 @@ public class Receiver implements Runnable {
         Object obj = this.input.readObject();
         Topic topic = (Topic) obj;
         System.out.println("===============================================\n" +
-                "**New Advertisement Received :\nName:" + topic.getName() + "\nKeywords: " + topic.getKeywords()+
+                "**New Advertisement Received :\nName:" + topic.getName() + "\nKeywords: " + topic.getKeywords() +
                 "\n===============================================");
 
     }
@@ -137,15 +135,14 @@ public class Receiver implements Runnable {
             Event event = (Event) obj;
 
             System.out.println("===============================================\n" +
-                    "**New Event Received :\n" +"Title: "+ event.getTitle() + "\nContent: "+ event.getContent() +
+                    "**New Event Received :\n" + "Title: " + event.getTitle() + "\nContent: " + event.getContent() +
                     "\n===============================================");
-
 
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //implement receiving event notifications here
+
 
     }
 }

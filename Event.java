@@ -1,43 +1,42 @@
 import java.io.Serializable;
-import java.util.List;
 
-public class Event implements Serializable{
-	private int id;
-	private Topic topic;
-	private String title;
-	private String content;
-	
-	/* Constructor */
-	Event(int id, Topic topic, String title, String content){
-		this.id = id;
-		this.topic = topic;
-		this.title = title;
-		this.content = content;
-	}
+public class Event implements Serializable {
+    private int id;
+    private Topic topic;
+    private String title;
+    private String content;
 
-	public int getId() {
-		return id;
-	}
+    /* Constructor */
+    Event(int id, Topic topic, String title, String content) {
+        this.id = id;
+        this.topic = topic;
+        this.title = title;
+        this.content = content;
+    }
 
-	public Topic getTopic() {
-		return topic;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public Topic getTopic() {
+        return topic;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	@Override
-	public String toString() {
-		return "Event{" +
-				"id=" + id +
-				", topic=" + topic +
-				", title='" + title + '\'' +
-				", content='" + content + '\'' +
-				'}';
-	}
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", topic=" + topic +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
