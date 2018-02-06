@@ -23,7 +23,14 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	@Override
 	public void subscribe(String keyword) {
+
 		// TODO Auto-generated method stub
+		try {
+			output.writeUTF(keyword);
+			output.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -80,6 +87,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 			this.output.writeObject(event);
 			this.output.flush();
+			System.out.println(this.username + " published Event: " + event.getTitle());
 		}
 		catch(IOException e){
 			e.printStackTrace();
@@ -141,25 +149,26 @@ public class PubSubAgent implements Publisher, Subscriber{
 		this.output.writeUTF(username);
 		this.output.flush();
 
-		String receieved = this.input.readUTF();
+		String received = this.input.readUTF();
 		// Status: Logged in or Registered
-		System.out.println(receieved);
+		System.out.println(received);
 
-		//receive arraylist of missed advertisements
-		if(!receieved.equalsIgnoreCase("You are Registered:"+username)) {
+		if(!received.equalsIgnoreCase("You are Registered:"+username)) {
 			try {
+				//receive arraylist of missed topics
 				Object objtopic = this.input.readObject();
 				ArrayList<Topic> missedTopics = (ArrayList<Topic>) objtopic;
 
 				if (missedTopics.size() == 0) {
 					System.out.println("You have missed 0 topics");
 				} else {
-					StringBuilder sb = new StringBuilder("-------------------\n***You have Missed Topics***\n");
+					StringBuilder sb = new StringBuilder("===============================================" +
+							"\n***You have Missed Topics***\n");
 					int i =0;
 					for (Topic t : missedTopics) {
 						sb.append(++i).append(". ").append(t.getName()).append("\n");
 					}
-					sb.append("-------------------");
+					sb.append("===============================================");
 					System.out.println(sb);
 				}
 
@@ -171,17 +180,17 @@ public class PubSubAgent implements Publisher, Subscriber{
 				if (missedEvents.size() == 0) {
 					System.out.println("You have missed 0 Events");
 				} else {
-					StringBuilder sb = new StringBuilder("-------------------\n***You have Missed Events***\n");
+					StringBuilder sb = new StringBuilder("===============================================" +
+							"\n***You have Missed Events***\n");
 					int i = 0;
 					for (Event e : missedEvents) {
-						sb.append(++i).append(". ").append("Topic Name: ").append(/*e.getTopic().getName()*/"")
-								.append(" Event Title: ").append(e.getTitle()).append("\n");
+						sb.append(++i).append(". ").append("Topic Name: ").append(e.getTopic().getName())
+								.append(" Title: ").append(e.getTitle()).append(" Content: ")
+								.append(e.getContent()).append("\n");
 					}
-					sb.append("-------------------");
+					sb.append("===============================================");
 					System.out.println(sb);
 				}
-
-
 
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -202,7 +211,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 		Scanner sc  = new Scanner(System.in);
 		Random rand = new Random();
-
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		System.out.println("Enter choice");
 		int choice = sc.nextInt();
@@ -221,8 +230,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 					this.output.writeUTF("getAllTopics");
 					this.output.flush();
 
-
-
 					synchronized (input) {
 						try {
 							input.wait();
@@ -237,7 +244,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 					this.output.writeUTF(this.username);
 					this.output.flush();
 
-					System.out.println("Enter topics to subscribe to");
+					System.out.println("Enter topics to subscribe to:");
 					while (true) {
 						System.out.println("Press N/n to exit");
 						String topicName = sc.next();
@@ -248,6 +255,38 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 						else {
 							this.subscribe(new Topic(0, topicName));
+						}
+					}
+				}
+				else if(choice2 ==2){
+					// KEYWORD SUBSCRIPTION
+					System.out.println("\n==== SUBSCRIPTION BY KEYWORD ====");
+
+					this.output.writeUTF("getAllKeywords");
+					this.output.flush();
+
+					synchronized (input) {
+						try {
+							input.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					this.output.writeUTF("subscribeKeywords");
+					this.output.flush();
+
+
+					System.out.println("Enter keywords to subscribe to:");
+					while (true) {
+						System.out.println("Press N/n to exit");
+						String keyWordName = sc.next();
+						if (keyWordName.equalsIgnoreCase("N")){
+							this.subscribe("3513");		//Stop code
+							break;
+						}
+
+						else {
+							this.subscribe(keyWordName);
 						}
 					}
 				}
@@ -297,25 +336,42 @@ public class PubSubAgent implements Publisher, Subscriber{
 			case 4:
 				System.out.println("Publish Event");
 				int idEvent = rand.nextInt();
-				System.out.println("Name of the topic:");
+				System.out.println("Name of the TOPIC:");
 				String eventTopicName = sc.next();
 				Topic eventTopic = new Topic(0, eventTopicName);
-				System.out.println("Name of the topic Title:");
-				String eventTitle = sc.next();
-				System.out.println("Enter Content:");
-				String eventContent = sc.nextLine();
+
+				System.out.print("Name of the topic Title: ");
+
+				String eventTitle = br.readLine();
+				System.out.print("Enter Content: ");
+				String eventContent = br.readLine();
 				Event newevent = new Event(idEvent, eventTopic, eventTitle, eventContent);
 				this.publish(newevent);
-				System.out.println(this.username + " published Event: " + newevent);
-
 				break;
+
 			case 5:
+				Topic newTopic;
 				int idTopic = rand.nextInt();
 				System.out.println("Name of the topic:");
 				String topicName = sc.next();
+				System.out.println("Do you have keywords?(Y/y)");
+				String _keyword = sc.next();
+				if(_keyword.equalsIgnoreCase("y")){
+					System.out.println("Enter Keywords:");
+					ArrayList<String> keywordList = new ArrayList<>();
+					while(true){
+						System.out.print("Press N/n to exit");
+						_keyword = sc.next();
+						if(_keyword.equalsIgnoreCase("n"))
+							break;
+						keywordList.add(_keyword);
+					}
+					newTopic = new Topic(idTopic, topicName, keywordList);
 
-				Topic newTopic = new Topic(idTopic,topicName);
-
+				}
+				else {
+					newTopic = new Topic(idTopic, topicName);
+				}
 				this.advertise(newTopic);
 				break;
 
