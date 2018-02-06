@@ -27,10 +27,13 @@ public class Receiver implements Runnable {
                         this.receiveEvents();
                         break;
                     case "getAllTopics":
-                        this.receiveAllTopics();
+                        this.getAllTopics();
                         break;
                     case "getSubscribedTopics":
                         this.receiveSubscribedTopics();
+                        break;
+                    case "getAllKeywords":
+                        this.getAllKeywords();
                         break;
                     default:
                         System.out.println("Error");
@@ -64,7 +67,33 @@ public class Receiver implements Runnable {
         }
     }
 
-    private void receiveAllTopics() {
+    private void getAllKeywords() {
+        synchronized (input)
+        {
+            //receive arraylistt of strings
+            try {
+                Object obj = input.readObject();
+                ArrayList<String> allKeywords = (ArrayList<String>)obj;
+
+                StringBuilder keyword_string = new StringBuilder("======================All KEYWORDS=========================\n");
+                int i =0;
+                for (String keyword: allKeywords) {
+                    keyword_string.append("").append(++i).append(". ").append(keyword).append("\n");
+                }
+                keyword_string.append("====================================================================\n");
+                System.out.println(keyword_string);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
+            input.notify();
+        }
+
+    }
+
+
+        private void getAllTopics() {
 
         synchronized (input)
         {
@@ -96,7 +125,7 @@ public class Receiver implements Runnable {
         Object obj = this.input.readObject();
         Topic topic = (Topic) obj;
         System.out.println("===============================================\n" +
-                "**New Advertisement Received :" + topic.getName() +
+                "**New Advertisement Received :\nName:" + topic.getName() + "\nKeywords: " + /*topic.getKeywords()*/
                 "\n===============================================");
 
     }
