@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,7 +14,9 @@ public class EventManager{
 	public static ConcurrentHashMap<String,ArrayList<String>> topicSubscriber = new ConcurrentHashMap<>();
 
 	//used for advertising keyword , topic : possibility of overwriting
-	public static ConcurrentHashMap<String,String> keyword_topic = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String,String> keywordTopic = new ConcurrentHashMap<>();
+
+	public static ConcurrentHashMap<String,List<String>> 	topicKeyword = new ConcurrentHashMap<>();
 
 	//	Subscriber - key, ClientThread - value
 	public static ConcurrentHashMap<String, ClientThread> subscriberThreadMap = new ConcurrentHashMap<>();

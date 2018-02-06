@@ -42,4 +42,8 @@ public class Topic implements Serializable{
                 ", name='" + name + '\'' +
                 '}';
     }
+
+	public List<String> getKeywords() {
+		return keywords;
+	}
 }

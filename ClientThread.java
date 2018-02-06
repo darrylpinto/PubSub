@@ -105,6 +105,49 @@ public class ClientThread implements Runnable {
 
                     break;
 
+                case "getAllKeywords":
+
+                    objoutput.writeUTF("getAllKeywords");
+                    objoutput.flush();
+
+                    ArrayList<String> arrKeywords = new ArrayList<>();
+
+                    for(String key: EventManager.keywordTopic.keySet()){
+                        arrKeywords.add(key);
+                    }
+
+                    objoutput.writeObject(arrKeywords);
+                    objoutput.flush();
+
+                    break;
+
+
+                case "subscribeKeywords":
+
+                    while(true){
+                        String keyword = objinput.readUTF();
+
+                        if(keyword.equalsIgnoreCase("3513"))
+                            break;
+
+                        String topicName = EventManager.keywordTopic.get(keyword);
+
+                        ArrayList<String> temp =  EventManager.topicSubscriber.get(topicName);
+                        HashSet<String> isUserPresent = new HashSet<>(temp);
+
+                        if(!isUserPresent.contains(this.user_name)){
+                            temp.add(this.user_name);
+                            EventManager.topicSubscriber.put(topicName, temp);
+
+                            ArrayList<String> topicTemp = EventManager.subscriberTopics.get(this.user_name);
+                            topicTemp.add(topicName);
+                            EventManager.subscriberTopics.put(this.user_name, topicTemp);
+
+                            System.out.printf("%s has been subscribed to %s using keyword %s\n",this.user_name, topicName, keyword);
+                        }
+
+
+                    }
 
                 case "subscribeTopics":
 
@@ -182,6 +225,11 @@ public class ClientThread implements Runnable {
                             EventManager.topicSubscriber.put(newtopic.getName(), new ArrayList<>());
                             EventManager.advertiseTopic(newtopic);
 
+                            EventManager.topicKeyword.put(newtopic.getName(), newtopic.getKeywords());
+
+                            for(String keyword: newtopic.getKeywords()){
+                                EventManager.keywordTopic.put(keyword, newtopic.getName());
+                            }
                         }
 
                     } catch (ClassNotFoundException e) {
