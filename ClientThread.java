@@ -122,33 +122,6 @@ public class ClientThread implements Runnable {
                     break;
 
 
-                case "subscribeKeywords":
-
-                    while(true){
-                        String keyword = objinput.readUTF();
-
-                        if(keyword.equalsIgnoreCase("3513"))
-                            break;
-
-                        String topicName = EventManager.keywordTopic.get(keyword);
-
-                        ArrayList<String> temp =  EventManager.topicSubscriber.get(topicName);
-                        HashSet<String> isUserPresent = new HashSet<>(temp);
-
-                        if(!isUserPresent.contains(this.user_name)){
-                            temp.add(this.user_name);
-                            EventManager.topicSubscriber.put(topicName, temp);
-
-                            ArrayList<String> topicTemp = EventManager.subscriberTopics.get(this.user_name);
-                            topicTemp.add(topicName);
-                            EventManager.subscriberTopics.put(this.user_name, topicTemp);
-
-                            System.out.printf("%s has been subscribed to %s using keyword %s\n",this.user_name, topicName, keyword);
-                        }
-
-
-                    }
-
                 case "subscribeTopics":
 
                     String receivedUserName = objinput.readUTF();
@@ -186,7 +159,7 @@ public class ClientThread implements Runnable {
                         }
                         catch (NullPointerException e)
                         {
-                            System.out.println("Key not found invalid spelling!!!");
+                            System.out.println("Key not found or invalid spelling!!!");
                         }
                         catch (ClassNotFoundException e) {
                             e.printStackTrace();
@@ -194,6 +167,40 @@ public class ClientThread implements Runnable {
 
                     }
 
+                    break;
+
+                case "subscribeKeywords":
+
+                    while(true){
+
+                        try{
+                            String keyword = objinput.readUTF();
+
+                            if(keyword.equalsIgnoreCase("3513"))
+                                break;
+
+                            String topicName = EventManager.keywordTopic.get(keyword);
+
+                            ArrayList<String> temp =  EventManager.topicSubscriber.get(topicName);
+                            HashSet<String> isUserPresent = new HashSet<>(temp);
+
+                            if(!isUserPresent.contains(this.user_name)){
+                                temp.add(this.user_name);
+                                EventManager.topicSubscriber.put(topicName, temp);
+
+                                ArrayList<String> topicTemp = EventManager.subscriberTopics.get(this.user_name);
+                                topicTemp.add(topicName);
+                                EventManager.subscriberTopics.put(this.user_name, topicTemp);
+
+                                System.out.printf("%s has been subscribed to %s using keyword %s\n",this.user_name, topicName, keyword);
+                            }
+                        }catch(NullPointerException e){
+                            System.out.println("Key not found or invalid spelling!!!");
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
                     break;
 
                 case "getSubscribedTopics":
@@ -255,19 +262,15 @@ public class ClientThread implements Runnable {
                             if(topic.getName().equals("3512"))
                                 break;
 
-                            //removed from the subscrbed topic list of user
-                           // System.out.println("SUBSCRIBER TOPIC (before): "+ EventManager.subscriberTopics);
+                            //removed from the subscribed topic list of user
                             ArrayList<String> temparr = EventManager.subscriberTopics.get(userNametoUnsubscribe);
                             temparr.remove(topic.getName());
                             EventManager.subscriberTopics.put(userNametoUnsubscribe, temparr);
-                           // System.out.println("SUBSCRIBER TOPIC(after): "+ EventManager.subscriberTopics);
 
                             // removed from the list of subscriber for that specific topic
-                          //  System.out.println("TOPIC SUBSCRIBER (before): "+ EventManager.topicSubscriber);
                             temparr = EventManager.topicSubscriber.get(topic.getName());
                             temparr.remove(userNametoUnsubscribe);
                             EventManager.topicSubscriber.put(topic.getName(), temparr);
-                         //   System.out.println("TOPIC SUBSCRIBER (after): "+ EventManager.topicSubscriber);
 
                             System.out.println(userNametoUnsubscribe+ " has unsubsribed from the topic: "+topic.getName());
 
@@ -290,7 +293,7 @@ public class ClientThread implements Runnable {
                 case "unsubscribeAll":
                      String usernameAll = objinput.readUTF();
 
-                     //removed all topics from subsriber topic
+                     //removed all topics from subscriber topic
                      ArrayList<String> temptopics = EventManager.subscriberTopics.get(usernameAll);
                      EventManager.subscriberTopics.put(usernameAll,new ArrayList<>());
 

@@ -125,7 +125,7 @@ public class Receiver implements Runnable {
         Object obj = this.input.readObject();
         Topic topic = (Topic) obj;
         System.out.println("===============================================\n" +
-                "**New Advertisement Received :\nName:" + topic.getName() + "\nKeywords: " + /*topic.getKeywords()*/
+                "**New Advertisement Received :\nName:" + topic.getName() + "\nKeywords: " + topic.getKeywords()+
                 "\n===============================================");
 
     }

@@ -12,7 +12,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	@Override
 	public void subscribe(Topic topic) {
-		// TODO Auto-generated method stub
+
 		try {
 			output.writeObject(topic);
 			output.flush();
@@ -24,7 +24,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 	@Override
 	public void subscribe(String keyword) {
 
-		// TODO Auto-generated method stub
 		try {
 			output.writeUTF(keyword);
 			output.flush();
@@ -36,7 +35,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 
 	@Override
 	public void unsubscribe(Topic topic) {
-		// TODO Auto-generated method stub
+
 		try {
 
 			this.output.writeObject(topic);
@@ -51,7 +50,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 	@Override
 	public void unsubscribe() {
 
-		// TODO Auto-generated method stub
 		try {
 			this.output.writeUTF("unsubscribeAll");
 			this.output.flush();
@@ -61,7 +59,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 
 	}
 
@@ -74,13 +71,12 @@ public class PubSubAgent implements Publisher, Subscriber{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void publish(Event event) {
-		// TODO Auto-generated method stub
+
 		try{
 			this.output.writeUTF("Event");
 			this.output.flush();
@@ -110,8 +106,6 @@ public class PubSubAgent implements Publisher, Subscriber{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// TODO Auto-generated method stub
 
 	}
 
@@ -166,9 +160,10 @@ public class PubSubAgent implements Publisher, Subscriber{
 							"\n***You have Missed Topics***\n");
 					int i =0;
 					for (Topic t : missedTopics) {
-						sb.append(++i).append(". ").append(t.getName()).append("\n");
+						sb.append(++i).append(". Topic Name: ").append(t.getName())
+								.append("\t" + "Keywords: ").append(t.getKeywords());
 					}
-					sb.append("===============================================");
+					sb.append("\n===============================================");
 					System.out.println(sb);
 				}
 
@@ -206,8 +201,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 				"\n2. Unsubscribe" +
 				"\n3. List subscribed topics"+
 				"\n4. Publish"+
-				"\n5. Advertise"+
-				"\n6. Read Messages");
+				"\n5. Advertise");
 
 		Scanner sc  = new Scanner(System.in);
 		Random rand = new Random();
@@ -258,7 +252,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 						}
 					}
 				}
-				else if(choice2 ==2){
+				else if(choice2 == 2){
 					// KEYWORD SUBSCRIPTION
 					System.out.println("\n==== SUBSCRIPTION BY KEYWORD ====");
 
@@ -360,7 +354,7 @@ public class PubSubAgent implements Publisher, Subscriber{
 					System.out.println("Enter Keywords:");
 					ArrayList<String> keywordList = new ArrayList<>();
 					while(true){
-						System.out.print("Press N/n to exit");
+						System.out.println("Press N/n to exit");
 						_keyword = sc.next();
 						if(_keyword.equalsIgnoreCase("n"))
 							break;
