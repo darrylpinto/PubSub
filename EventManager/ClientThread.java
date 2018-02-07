@@ -12,15 +12,25 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Class Event thread is used to communicate with each client individually
+ */
 public class ClientThread implements Runnable {
 
-    public String user_name;
-    private ServerSocket serverSocket;
-    private Socket client;
+    public String user_name; //user name of client
+    private ServerSocket serverSocket; //socket of the port
+    private Socket client; // socket of the client
     private ObjectInputStream objinput;
     private ObjectOutputStream objoutput;
 
     // ServerSocket is serverSocket on portThread
+
+    /**
+     * Constructor of client thread
+     * @param client : socket of client
+     * @param serverSocket : socket of the port
+     * @throws IOException
+     */
     public ClientThread(Socket client, ServerSocket serverSocket) throws IOException {
 
         this.client = client;
@@ -36,6 +46,7 @@ public class ClientThread implements Runnable {
     public void run() {
 
         try {
+            //user name of the client
             user_name = objinput.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,10 +55,13 @@ public class ClientThread implements Runnable {
         System.out.println("User logged in: " + user_name);
 
         try {
+            //checks if the user is already present
             if (EventManager.subscriberTopics.containsKey(user_name)) {
 
                 objoutput.writeUTF("Logged In:" + user_name);
                 objoutput.flush();
+
+                //sends offline topics and events if there exist
 
                 objoutput.reset();
                 objoutput.writeObject(EventManager.offlineTopics.get(user_name));
@@ -62,6 +76,8 @@ public class ClientThread implements Runnable {
 
 
             } else {
+                // if its a new user then register it
+
                 EventManager.subscriberTopics.put(user_name, new ArrayList<>());
                 objoutput.writeUTF("You are Registered:" + user_name);
                 objoutput.flush();
@@ -79,14 +95,19 @@ public class ClientThread implements Runnable {
 
     }
 
+    /**
+     * This process starts the communication with the client
+     * @throws IOException
+     */
     private void communicate() throws IOException {
 
         while (true) {
 
             String input_string = this.objinput.readUTF();
 
-
+            // switch case handles each request from the menu sent by user
             switch (input_string) {
+                //sends list of all topics user has subscribed to
                 case "getAllTopics":
 
                     objoutput.writeUTF("getAllTopics");
@@ -103,6 +124,7 @@ public class ClientThread implements Runnable {
 
                     break;
 
+                // sends list of keywords
                 case "getAllKeywords":
 
                     objoutput.writeUTF("getAllKeywords");
@@ -119,7 +141,7 @@ public class ClientThread implements Runnable {
 
                     break;
 
-
+                // case to subscribe to all the topics
                 case "subscribeTopics":
 
                     String receivedUserName = objinput.readUTF();
@@ -162,6 +184,7 @@ public class ClientThread implements Runnable {
 
                     break;
 
+                // case for subscribing using keywords
                 case "subscribeKeywords":
 
                     while (true) {
@@ -169,6 +192,7 @@ public class ClientThread implements Runnable {
                         try {
                             String keyword = objinput.readUTF();
 
+                            // 3513 is the agreed keyword to break the input list from client
                             if (keyword.equalsIgnoreCase("3513"))
                                 break;
 
@@ -197,6 +221,7 @@ public class ClientThread implements Runnable {
                     }
                     break;
 
+                // it fulfills the list of subscribed topics of the user
                 case "getSubscribedTopics":
 
                     this.objoutput.writeUTF("getSubscribedTopics");
@@ -211,7 +236,7 @@ public class ClientThread implements Runnable {
 
                     break;
 
-
+                // this case is for advertising a topics
                 case "advertise":
                     try {
                         Object obj = this.objinput.readObject();
@@ -236,7 +261,7 @@ public class ClientThread implements Runnable {
                     }
                     break;
 
-
+                // it fulfills the request of unsubscribing
                 case "unsubscribeTopic":
 
                     String userNametoUnsubscribe = objinput.readUTF();
@@ -279,6 +304,7 @@ public class ClientThread implements Runnable {
 
                     break;
 
+                // this ase is to unsubscribe from all the topics
                 case "unsubscribeAll":
                     String usernameAll = objinput.readUTF();
 
@@ -298,6 +324,7 @@ public class ClientThread implements Runnable {
                     break;
 
 
+                //this is the case which is called when a new event is created
                 case "Event":
                     try {
                         Object obj = objinput.readObject();
@@ -317,6 +344,11 @@ public class ClientThread implements Runnable {
 
     }
 
+    /**
+     * This method is called when a new topic is advertised
+     * @param newtopic : topic is the topic to be advertised
+     * @throws IOException
+     */
     public void sendAdvertisement(Topic newtopic) throws IOException {
 
         this.objoutput.writeUTF("Topic");
@@ -329,6 +361,11 @@ public class ClientThread implements Runnable {
 
     }
 
+    /**
+     * this method is called when a new event is advertised
+     * @param event
+     * @throws IOException
+     */
     public void sendEvent(Event event) throws IOException {
         this.objoutput.writeUTF("Event");
         this.objoutput.flush();
