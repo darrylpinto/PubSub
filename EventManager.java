@@ -69,6 +69,7 @@ public class EventManager {
 
     public static void main(String[] args) throws IOException {
 
+        new Thread(new DisplayTopicsSubscribers()).start();
         new EventManager().startService();
     }
 
@@ -140,31 +141,5 @@ public class EventManager {
 
     }
 
-    /*
-     * add new topic when received advertisement of new topic
-     */
-    private void addTopic(Topic topic) {
 
-    }
-
-    /*
-     * add subscriber to the internal list
-     */
-    private void addSubscriber() {
-
-    }
-
-    /*
-     * remove subscriber from the list
-     */
-    private void removeSubscriber() {
-
-    }
-
-    /*
-     * show the list of subscriber for a specified topic
-     */
-    private void showSubscribers(Topic topic) {
-
-    }
 }

@@ -4,6 +4,9 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * class PortThread is used to support multiple ports using Multi-Threading
+ */
 public class PortThread implements Runnable {
 
     ServerSocket mysocket;
@@ -13,15 +16,21 @@ public class PortThread implements Runnable {
 
     }
 
+    /**
+     * Run method of PortThread
+     */
     @Override
     public void run() {
 
-        Listen();
+        listen();
 
     }
 
-    public void Listen() {
-        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+    /**
+     * listen method is used to listen for clients on ports
+     */
+    private void listen() {
+        ExecutorService threadPool = Executors.newFixedThreadPool(20);
 
         while (true) {
             try {
