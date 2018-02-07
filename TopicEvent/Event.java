@@ -1,3 +1,5 @@
+package TopicEvent;
+
 import java.io.Serializable;
 
 public class Event implements Serializable {
@@ -7,7 +9,7 @@ public class Event implements Serializable {
     private String content;
 
     /* Constructor */
-    Event(int id, Topic topic, String title, String content) {
+    public Event(int id, Topic topic, String title, String content) {
         this.id = id;
         this.topic = topic;
         this.title = title;

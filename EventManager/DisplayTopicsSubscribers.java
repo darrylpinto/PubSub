@@ -1,3 +1,8 @@
+package EventManager;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

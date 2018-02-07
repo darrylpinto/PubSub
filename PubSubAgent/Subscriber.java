@@ -1,3 +1,7 @@
+package PubSubAgent;
+
+import TopicEvent.Topic;
+
 public interface Subscriber {
     /*
      * subscribe to a topic

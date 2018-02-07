@@ -1,3 +1,8 @@
+package EventManager;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 public class EventManager {
 
@@ -46,7 +52,7 @@ public class EventManager {
 
                 try {
                     thread.sendEvent(event);
-                } catch (SocketException e) {
+            } catch (SocketException e) {
 
                     System.out.println(thread.user_name + " is offline. Caching the Event:" + event.getTitle());
                     ArrayList<Event> eventList = new ArrayList<>();
@@ -57,7 +63,6 @@ public class EventManager {
 
                     eventList.add(event);
                     EventManager.offlineEvents.put(thread.user_name, eventList);
-                    System.out.println("OFFLINE EVENTS:" + EventManager.offlineEvents);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -95,8 +100,6 @@ public class EventManager {
                 e.printStackTrace();
             }
         }
-
-        System.out.println("ALL TOPICS:" + EventManager.topicSubscriber);
 
     }
 

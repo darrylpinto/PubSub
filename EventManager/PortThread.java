@@ -1,3 +1,8 @@
+package EventManager;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

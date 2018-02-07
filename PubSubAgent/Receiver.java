@@ -1,6 +1,11 @@
+package PubSubAgent;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
 
 /**
  * Created by Darryl Pinto on 2/4/2018.

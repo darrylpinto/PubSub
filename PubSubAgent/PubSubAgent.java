@@ -1,8 +1,13 @@
+package PubSubAgent;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+
+
+import TopicEvent.*;
 
 public class PubSubAgent implements Publisher, Subscriber {
 
@@ -161,7 +166,7 @@ public class PubSubAgent implements Publisher, Subscriber {
                     int i = 0;
                     for (Topic t : missedTopics) {
                         sb.append(++i).append(". Topic Name: ").append(t.getName())
-                                .append("\t" + "Keywords: ").append(t.getKeywords());
+                                .append("\t" + "Keywords: ").append(t.getKeywords()).append("\n");
                     }
                     sb.append("\n===============================================");
                     System.out.println(sb);

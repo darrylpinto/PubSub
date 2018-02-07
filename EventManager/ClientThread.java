@@ -1,3 +1,9 @@
+package EventManager;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
+
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,8 +35,6 @@ public class ClientThread implements Runnable {
     @Override
     public void run() {
 
-        // synchronized (serverSocket) {
-        // String user_name = null;
         try {
             user_name = objinput.readUTF();
         } catch (IOException e) {
@@ -70,14 +74,12 @@ public class ClientThread implements Runnable {
 
             communicate();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.printf("%s: %s has disconnected\n",e.getMessage(),this.user_name);
         }
-        // }  // Synchronised block ends
 
     }
 
     private void communicate() throws IOException {
-
 
         while (true) {
 
@@ -131,8 +133,8 @@ public class ClientThread implements Runnable {
 
                             if (topic.getName().equals("3511"))
                                 break;
-                            // adding subscriber to topicsubsriber
 
+                            // adding subscriber to topicsubsriber
                             ArrayList<String> temp = EventManager.topicSubscriber.get(topic.getName());
                             HashSet<String> isUserPresent = new HashSet<>(temp);
 
@@ -147,7 +149,6 @@ public class ClientThread implements Runnable {
                                 EventManager.subscriberTopics.put(receivedUserName, topicTemp);
 
                                 System.out.println(receivedUserName + " is subscribed to topic: " + topic.getName());
-                                System.out.println(EventManager.subscriberTopics);
                             }
 
 
@@ -184,7 +185,8 @@ public class ClientThread implements Runnable {
                                 topicTemp.add(topicName);
                                 EventManager.subscriberTopics.put(this.user_name, topicTemp);
 
-                                System.out.printf("%s has been subscribed to %s using keyword %s\n", this.user_name, topicName, keyword);
+                                System.out.printf("%s has been subscribed to %s using keyword %s\n",
+                                        this.user_name, topicName, keyword);
                             }
                         } catch (NullPointerException e) {
                             System.out.println("Key not found or invalid spelling!!!");
@@ -201,7 +203,7 @@ public class ClientThread implements Runnable {
                     this.objoutput.flush();
 
                     ArrayList<String> temp = EventManager.subscriberTopics.get(this.user_name);
-                    System.out.println("Sent to " + user_name + "->" + temp);
+                    System.out.println("Request for List of Subscribed Topics by " + user_name + " Sending " + temp);
 
                     objoutput.reset();
                     this.objoutput.writeObject(temp);
@@ -212,10 +214,9 @@ public class ClientThread implements Runnable {
 
                 case "advertise":
                     try {
-                        System.out.println("*inside advertise");
                         Object obj = this.objinput.readObject();
                         Topic newtopic = (Topic) obj;
-                        System.out.println(newtopic);
+
 
                         if (EventManager.topicSubscriber.containsKey(newtopic.getName())) {
                             System.out.println("Topic already present: " + newtopic.getName());
@@ -241,14 +242,13 @@ public class ClientThread implements Runnable {
                     String userNametoUnsubscribe = objinput.readUTF();
 
                     while (true) {
-                        // receive topic name = 3512 to break the loop
                         try {
 
-                            // receive topic name = 3512 to break the loop
 
                             Object obj = objinput.readObject();
                             Topic topic = (Topic) obj;
 
+                            // receive topic name = 3512 to break the loop
                             if (topic.getName().equals("3512"))
                                 break;
 
@@ -262,8 +262,8 @@ public class ClientThread implements Runnable {
                             temparr.remove(userNametoUnsubscribe);
                             EventManager.topicSubscriber.put(topic.getName(), temparr);
 
-                            System.out.println(userNametoUnsubscribe + " has unsubsribed from the topic: " + topic.getName());
-
+                            System.out.println(userNametoUnsubscribe + " has unsubscribed" +
+                                    " from the topic: " + topic.getName());
 
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
@@ -292,7 +292,7 @@ public class ClientThread implements Runnable {
                         temptopiclist.remove(usernameAll);
                         EventManager.topicSubscriber.put(s, temptopiclist);
 
-                        System.out.println(usernameAll + " has unsubsribed from the topic: " + s);
+                        System.out.println(usernameAll + " has unsubscribed from the topic: " + s);
                     }
 
                     break;
@@ -325,8 +325,7 @@ public class ClientThread implements Runnable {
         this.objoutput.writeObject(newtopic);
         this.objoutput.flush();
 
-        System.out.println("Topic Advertised:" + newtopic.getName());
-
+        System.out.printf("%s Advertised to %s\n",newtopic.getName(), this.user_name);
 
     }
 
@@ -337,6 +336,6 @@ public class ClientThread implements Runnable {
         this.objoutput.writeObject(event);
         this.objoutput.flush();
 
-        System.out.println("Event Published:" + event.getTitle());
+        System.out.printf("%s (%s) Published to %s",event.getTitle(), event.getTopic().getName(), this.user_name);
     }
 }

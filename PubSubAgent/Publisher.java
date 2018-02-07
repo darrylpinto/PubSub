@@ -1,3 +1,8 @@
+package PubSubAgent;
+
+import TopicEvent.Event;
+import TopicEvent.Topic;
+
 public interface Publisher {
     /*
      * publish an event of a specific topic with title and content
