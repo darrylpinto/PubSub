@@ -1,13 +1,8 @@
-package PubSubAgent;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-
-
-import TopicEvent.*;
 
 /**
  * This file is a part of the PubSubAgent project

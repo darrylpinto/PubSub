@@ -1,8 +1,3 @@
-package PubSubAgent;
-
-import TopicEvent.Event;
-import TopicEvent.Topic;
-
 /**
  * This file is a part of the PubSubAgent project
  * Course: Distributed Systems

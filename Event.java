@@ -1,5 +1,3 @@
-package TopicEvent;
-
 import java.io.Serializable;
 
 /**

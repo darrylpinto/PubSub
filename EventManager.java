@@ -1,8 +1,3 @@
-package EventManager;
-
-import TopicEvent.Event;
-import TopicEvent.Topic;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
