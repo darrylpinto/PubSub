@@ -4,6 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
+
 public class Topic implements Serializable {
     private int id;
     private List<String> keywords;

@@ -2,6 +2,15 @@ package TopicEvent;
 
 import java.io.Serializable;
 
+/**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
+
 public class Event implements Serializable {
     private int id;
     private Topic topic;

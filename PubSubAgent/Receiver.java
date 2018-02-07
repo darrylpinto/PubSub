@@ -8,8 +8,14 @@ import TopicEvent.Event;
 import TopicEvent.Topic;
 
 /**
- * Created by Darryl Pinto on 2/4/2018.
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
  */
+
 public class Receiver implements Runnable {
     private ObjectInputStream input;
 
@@ -17,6 +23,12 @@ public class Receiver implements Runnable {
         this.input = input;
     }
 
+
+    /**
+     * This is the start point for the thread. This thread is
+     * responsible for listening continuously on the client side
+     * and receiving any information provided by the EventManager
+     */
     @Override
     public void run() {
 
@@ -24,6 +36,8 @@ public class Receiver implements Runnable {
             try {
                 String choice = this.input.readUTF();
 
+                //This switch case tells the client what it is going to receive and
+                //calls the appropriate function
                 switch (choice) {
                     case "Topic":
                         this.receiveAdvertisements();
@@ -51,6 +65,10 @@ public class Receiver implements Runnable {
         }
     }
 
+    /**
+     * This method receives all the topics the user is subscribed
+     * to from the EventManager and displays it
+     */
     private void receiveSubscribedTopics() {
 
         try {
@@ -72,6 +90,10 @@ public class Receiver implements Runnable {
         }
     }
 
+    /**
+     * This method receives all keywords from the EventManager
+     * and displays it
+     */
     private void getAllKeywords() {
         synchronized (input) {
             //receive arraylistt of strings
@@ -97,6 +119,10 @@ public class Receiver implements Runnable {
     }
 
 
+    /**
+     * This method receives the names of all the topics
+     * advertised ever from the EventManager and displays it
+     */
     private void getAllTopics() {
 
         synchronized (input) {
@@ -122,6 +148,13 @@ public class Receiver implements Runnable {
 
     }
 
+
+    /**
+     * This method receives any new Advertisement advertised by any user
+     * and sent to everyone by the EventManager
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void receiveAdvertisements() throws IOException, ClassNotFoundException {
 
         //Implement receiving advertisements here
@@ -133,6 +166,10 @@ public class Receiver implements Runnable {
 
     }
 
+    /**
+     * This method receives any new Events published by any user
+     * and sent to everyone by the EventManager
+     */
     private void receiveEvents() {
 
         try {

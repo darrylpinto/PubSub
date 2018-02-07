@@ -9,6 +9,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
+
+
+/**
  * This class is used to display list of Topics
  * and Subscribers in Event Manager
  */

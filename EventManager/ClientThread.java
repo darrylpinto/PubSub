@@ -13,6 +13,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
+
+/**
  * Class Event thread is used to communicate with each client individually
  */
 public class ClientThread implements Runnable {

@@ -14,6 +14,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
 
 public class EventManager {
 
@@ -72,12 +80,24 @@ public class EventManager {
 
     }
 
+    /**
+     * This is the main method. This method starts the execution of the
+     * program and spawns a new thread which if required displays
+     * all the subscribers of a topic
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
         new Thread(new DisplayTopicsSubscribers()).start();
         new EventManager().startService();
     }
 
+    /**
+     * This method advertises a new topic to every subscriber of that
+     * topic
+     * @param newtopic This is the new topic object to be advertised
+     */
     public static void advertiseTopic(Topic newtopic) {
         for (String user_name :
                 EventManager.subscriberThreadMap.keySet()) {
@@ -104,7 +124,7 @@ public class EventManager {
     }
 
     /*
-     * Start the repo service
+     * Receives a request on port 6000 and calls the redirect function
      */
     private void startService() throws IOException {
 
@@ -122,6 +142,12 @@ public class EventManager {
 
     }
 
+    /**
+     * This method redirects the request received on port 6000
+     * to a different port
+     * @param serverSock This is the socket object
+     * @throws IOException
+     */
     private void redirectToNewPort(ServerSocket serverSock) throws IOException {
 
         Random rand = new Random();

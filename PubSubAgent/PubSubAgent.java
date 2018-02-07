@@ -9,13 +9,30 @@ import java.util.Scanner;
 
 import TopicEvent.*;
 
+/**
+ * This file is a part of the PubSubAgent project
+ * Course: Distributed Systems
+ *
+ * @author Darryl Pinto (dp6417)
+ * @author Ketan Joshi (ksj4205)
+ * @author Renzil Dourado  (rd9012)
+ */
+
 public class PubSubAgent implements Publisher, Subscriber {
 
     public ObjectInputStream input;
     public ObjectOutputStream output;
     public String username;
 
-    //main
+    /**
+     * This is the main method for the PubSubAgent
+     * This method spawns a thread for continuously receiving
+     * information from the Server which is the EventManager
+     *
+     * @param args
+     * @throws IOException
+     */
+
     public static void main(String[] args) throws IOException {
         PubSubAgent pubsub = new PubSubAgent();
         pubsub.start();
@@ -27,6 +44,11 @@ public class PubSubAgent implements Publisher, Subscriber {
         }
     }
 
+    /**
+     * This method enables the user to send a topic
+     * to the Server to which it wishes to subscribe to
+     * @param topic the topic object
+     */
     @Override
     public void subscribe(Topic topic) {
 
@@ -38,6 +60,12 @@ public class PubSubAgent implements Publisher, Subscriber {
         }
     }
 
+
+    /**
+     * This method enables the user to send a keyword of the topic
+     * to the Server to which it wishes to subscribe to
+     * @param keyword The keyword of the topic
+     */
     @Override
     public void subscribe(String keyword) {
 
@@ -50,6 +78,12 @@ public class PubSubAgent implements Publisher, Subscriber {
 
     }
 
+
+    /**
+     * This method enables the user to unsubscribe
+     * from a topic by providing the topic name
+     * @param topic The topic object
+     */
     @Override
     public void unsubscribe(Topic topic) {
 
@@ -64,6 +98,13 @@ public class PubSubAgent implements Publisher, Subscriber {
 
     }
 
+
+    /**
+     * This method enables the user to unsubscribe
+     * from all the topics to which they have subscribed
+     * to. It basically sends a request to the EventManager
+     * to unsubscribe
+     */
     @Override
     public void unsubscribe() {
 
@@ -79,6 +120,12 @@ public class PubSubAgent implements Publisher, Subscriber {
 
     }
 
+
+    /**
+     * This method lists the topics to which the user
+     * has subscribed to. It basically sends a request to
+     * the EventManager to complete this functionality
+     */
     @Override
     public void listSubscribedTopics() {
 
@@ -91,6 +138,11 @@ public class PubSubAgent implements Publisher, Subscriber {
 
     }
 
+    /**
+     * This method enables the user to publish an event
+     * It sends a request to the EventManager to so
+     * @param event The event object to be published
+     */
     @Override
     public void publish(Event event) {
 
@@ -106,6 +158,13 @@ public class PubSubAgent implements Publisher, Subscriber {
         }
     }
 
+
+    /**
+     * This method enables the user to advertise a new topic
+     * It sends a request to the EventManager to help it
+     * advertise this new topic
+     * @param newTopic the Topic object to be advertised
+     */
     @Override
     public void advertise(Topic newTopic) {
 
@@ -125,6 +184,14 @@ public class PubSubAgent implements Publisher, Subscriber {
 
     }
 
+    /**
+     * This is the start of the program on the PubSubAgent side
+     * It first connects to the EventManager and then Registers/
+     * Logs in the user and displays any missed events/topics that
+     * the user may have missed when he/she was away
+     *
+     * @throws IOException
+     */
     private void start() throws IOException {
 
         Scanner sc = new Scanner(System.in);
@@ -200,6 +267,11 @@ public class PubSubAgent implements Publisher, Subscriber {
     }
 
 
+    /**
+     * This method displays a list of options available to the user
+     * and based on the input, calls the respective function accordingly
+     * @throws IOException
+     */
     private void printMenu() throws IOException {
 
         System.out.println("1. Subscribe (sub)" +
